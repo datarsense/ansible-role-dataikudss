@@ -65,12 +65,3 @@
     state: started
     enabled: true
   tags: [dss]
-
-- name: Retrieve API Credentials
-  become: true
-  become_user: "{{dss_service_user}}"
-  dss_get_credentials:
-    datadir: "/home/dataiku/{{datadir}}"
-    api_key_name: ansible
-  register: dss_connection_info
-  tags: [dss]
