@@ -1,0 +1,65 @@
+---
+
+- name: Installing dependencies
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - acl
+      - curl
+      - git
+      - libexpat1
+      - libncurses5
+      - nginx
+      - unzip
+      - zip
+      - default-jre-headless
+      - python2.7 
+      - libpython2.7 
+      - libfreetype6 
+      - libgomp1
+
+- name: Installing Debian 10 specific packages
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - python3.7 
+      - python3-distutils
+      - python3-pip
+      - python3-setuptools
+  become: True
+  when: ansible_facts['os_family'] == 'Debian' and ansible_facts ['distribution_major_version'] == '10'
+
+- name: Installing Ubuntu 16.04 specific packages
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - python3.6
+  become: True
+  when: ansible_facts['os_family'] == 'Ubuntu' and ansible_facts ['distribution_major_version'] == '16.04'
+
+- name: Installing Ubuntu 18.04 specific packages
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - python3.6
+      - python3-distutils
+  become: True
+  when: ansible_facts['os_family'] == 'Ubuntu' and ansible_facts ['distribution_major_version'] == '18.04'
+
+- name: Installing Ubuntu 20.04 specific packages
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - python3.7
+  become: True
+  when: ansible_facts['os_family'] == 'Ubuntu' and ansible_facts ['distribution_major_version'] == '20.04'

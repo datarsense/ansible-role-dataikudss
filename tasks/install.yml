@@ -1,0 +1,76 @@
+---
+- name: Download DSS
+  become: true
+  become_user: "{{dss_service_user}}"
+  get_url:
+    url: "https://cdn.downloads.dataiku.com/public/studio/{{dss_version}}/dataiku-dss-{{dss_version}}.tar.gz"
+    dest: "{{dss_install_dir_location}}/dataiku-dss-{{dss_version}}.tar.gz"
+  tags: [setup, dss-setup]
+
+- name: Unarchive DSS
+  become: true
+  become_user: "{{dss_service_user}}"
+  unarchive:
+    src: "{{dss_install_dir_location}}/dataiku-dss-{{dss_version}}.tar.gz"
+    dest: "{{dss_install_dir_location}}"
+    creates: "{{dss_install_dir_location}}/dataiku-dss-{{dss_version}}"
+    remote_src: yes
+  tags: [setup, dss-setup]
+
+- name: Install DSS dependencies
+  become: true
+  shell:
+    cmd: |
+      {{dss_install_dir_location}}/dataiku-dss-{{dss_version}}/scripts/install/install-deps.sh -yes 2>&1 > /tmp/dss-install-deps.log
+      touch {{dss_install_dir_location}}/dataiku-dss-{{dss_version}}/scripts/install/DEPS-INSTALLED
+    creates: "{{dss_install_dir_location}}/dataiku-dss-{{dss_version}}/scripts/install/DEPS-INSTALLED"
+  tags: [setup, dss-setup]
+
+- name: Install Dataiku python API
+  become: true
+  pip:
+    name: "git+https://github.com/dataiku/dataiku-api-client-python@release/5.1#egg=dataiku-api-client"
+    state: latest
+    executable: pip3
+    #state: forcereinstall # Useful when release/5.1 gets updated
+  tags: [setup, dss-setup, dss-api]
+
+- name: Run the Dataiku DSS installer
+  become: true
+  become_user: "{{dss_service_user}}"
+  command: "{{dss_install_dir_location}}/dataiku-dss-{{dss_version}}/installer.sh -d /home/{{dss_service_user}}/{{datadir}} -p {{port}} -t {{type}}"
+  args:
+    creates: "/home/{{dss_service_user}}/{{datadir}}/dss-version.json"
+  tags: [dss]
+
+# - name: Copy license file
+#   become: true
+#   become_user: "{{dss_service_user}}"
+#   copy:
+#     src: "{{dss_license_file}}"
+#     dest: "/home/{{dss_service_user}}/{{datadir}}/config/license.json"
+#   tags: [dss]
+
+- name: Install boot service
+  become: true
+  command: "{{dss_install_dir_location}}/dataiku-dss-{{dss_version}}/scripts/install/install-boot.sh -n {{datadir}} /home/dataiku/{{datadir}} dataiku"
+  args:
+    creates: "/etc/init.d/dataiku.{{datadir}}"
+  tags: [dss]
+
+- name: Start the studios
+  become: true
+  service:
+    name: "dataiku.{{datadir}}"
+    state: started
+    enabled: true
+  tags: [dss]
+
+- name: Retrieve API Credentials
+  become: true
+  become_user: "{{dss_service_user}}"
+  dss_get_credentials:
+    datadir: "/home/dataiku/{{datadir}}"
+    api_key_name: ansible
+  register: dss_connection_info
+  tags: [dss]

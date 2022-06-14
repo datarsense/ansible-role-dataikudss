@@ -1,0 +1,16 @@
+---
+name: Molecule Test
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip setuptools
+          python3 -m pip install --upgrade ansible molecule molecule-docker
+      - name: Test with molecule
+        run: |
+          ansible-galaxy install -r requirements.yml
+          molecule test

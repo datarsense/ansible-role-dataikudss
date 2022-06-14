@@ -1,0 +1,69 @@
+---
+# if [[ "$distribVersion" == 8* ]]; then
+#         PKG+=" ncurses-compat-libs"
+# fi
+# fi
+# if [ -z "$without_python" ]; then
+#         case "$distribVersion" in
+#                 7*) PKG+=" python3 freetype libgfortran libgomp";;
+#                 8*) PKG+=" python2 python36 freetype libgfortran libgomp";;
+#         esac
+# fi
+
+# Default package manager in Centos 7 is YUM
+- name: Enable EPEL Repository on CentOS 7
+  yum:
+    name: epel-release
+    state: latest
+  become: True
+  when: ansible_facts['os_family'] == 'RedHat' and ansible_facts ['distribution_major_version'] == '7'
+
+# Default package manager in Centos 8 is DNF
+- name: Enable EPEL Repository on CentOS 8
+  dnf:
+    name: epel-release
+    state: latest
+  become: True
+  when: ansible_facts['os_family'] == 'RedHat' and ansible_facts ['distribution_major_version'] == '8'
+
+- name: Installing dependencies
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - acl
+      - expat
+      - git
+      - nginx
+      - unzip
+      - zip
+      - java-1.8.0-openjdk
+
+- name: Installing CentOS 7 sepecific packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - python3 
+      - freetype 
+      - libgfortran 
+      - libgomp
+  become: True
+  when: ansible_facts['os_family'] == 'RedHat' and ansible_facts ['distribution_major_version'] == '7'
+
+- name: Installing CentOS 8 sepecific packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - ncurses-compat-libs
+      - python2 
+      - python36 
+      - freetype 
+      - libgfortran 
+      - libgomp
+  become: True
+  when: ansible_facts['os_family'] == 'RedHat' and ansible_facts ['distribution_major_version'] == '8'
