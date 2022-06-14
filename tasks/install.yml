@@ -3,7 +3,7 @@
   become: true
   become_user: "{{dss_service_user}}"
   get_url:
-    url: "https://cdn.downloads.dataiku.com/public/studio/{{dss_version}}/dataiku-dss-{{dss_version}}.tar.gz"
+    url: "{{dss_base_repository_url}}/{{dss_version}}/dataiku-dss-{{dss_version}}.tar.gz"
     dest: "{{dss_install_dir_location}}/dataiku-dss-{{dss_version}}.tar.gz"
   tags: [setup, dss-setup]
 

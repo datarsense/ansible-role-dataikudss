@@ -20,7 +20,8 @@ Role Variables
 
 | Variable | Default value |
 |----------|-------------|
-| dss_version| "10.0.7" |
+|dss_base_repository_url | https://cdn.downloads.dataiku.com/public/studio |
+|dss_version| "10.0.7" |
 |dss_api_version| "5.1" |
 |dss_service_user| dataiku |
 |dss_service_user_home_basedir| /home |
