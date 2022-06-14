@@ -30,4 +30,5 @@
         groupNameAttribute: "{{ldap_groupnameattribute}}"
         groupProfiles: "{{ldap_groupprofiles}}"
         authorizedGroups: "{{ldap_authorizedgroups}}"
+  ignore_errors: yes
   tags: [dss-config]

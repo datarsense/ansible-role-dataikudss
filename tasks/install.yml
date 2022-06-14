@@ -38,18 +38,18 @@
 - name: Run the Dataiku DSS installer
   become: true
   become_user: "{{dss_service_user}}"
-  command: "{{dss_install_dir_location}}/dataiku-dss-{{dss_version}}/installer.sh -d /home/{{dss_service_user}}/{{datadir}} -p {{port}} -t {{type}}"
+  command: "{{dss_install_dir_location}}/dataiku-dss-{{dss_version}}/installer.sh -d {{dss_data_dirs_location}} -p {{port}} -t {{type}}"
   args:
     creates: "/home/{{dss_service_user}}/{{datadir}}/dss-version.json"
   tags: [dss]
 
-# - name: Copy license file
-#   become: true
-#   become_user: "{{dss_service_user}}"
-#   copy:
-#     src: "{{dss_license_file}}"
-#     dest: "/home/{{dss_service_user}}/{{datadir}}/config/license.json"
-#   tags: [dss]
+- name: Copy license file
+  become: true
+  become_user: "{{dss_service_user}}"
+  copy:
+    src: "{{dss_license_file}}"
+    dest: "/home/{{dss_service_user}}/{{datadir}}/config/license.json"
+  tags: [dss]
 
 - name: Install boot service
   become: true

@@ -5,7 +5,7 @@ driver:
   name: docker
 platforms:
   - name: instance
-    image: python:slim-buster
+    image: python:3.7.13-slim-buster
     pre_build_image: true
 provisioner:
   name: ansible    
