@@ -10,6 +10,11 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip setuptools
           python3 -m pip install --upgrade ansible molecule molecule-docker
+      - name: Write license file without logging its content
+        run: 'echo "$LICENSE" > license.json'
+        shell: bash
+        env:
+          LICENSE: ${{ secrets.LICENSE }}
       - name: Test with molecule
         run: |
           ansible-galaxy install -r requirements.yml

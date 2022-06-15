@@ -26,7 +26,7 @@ Role Variables
 |dss_service_user| dataiku |
 |dss_service_user_home_basedir| /home |
 |dss_install_dir_location| /opt/dataiku |
-|dss_data_dirs_location| /data/dataiku |
+|datadir| dss_data |
 |dss_node_poll_fqdn| true # If true, use ansible_fqdn else |use ansible_host |
 |dss_license_file| license.json |
 

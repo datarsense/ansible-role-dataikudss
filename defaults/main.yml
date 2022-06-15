@@ -6,10 +6,25 @@ dss_api_version: "5.1"
 dss_service_user: dataiku
 dss_service_user_home_basedir: /home
 dss_install_dir_location: /opt/dataiku
-dss_data_dirs_location: /data/dataiku
 dss_node_poll_fqdn: true # If true, use ansible_fqdn else use ansible_host
 dss_license_file: license.json
 
 type: design
 datadir: dss_data
 port: 10000
+
+configure_ldap_settings: "true"
+ldap_url: "ldap://ldap.internal.example.com/dc=example,dc=com"
+ldap_binddn: "uid=readonly,ou=users,dc=example,dc=com"
+ldap_bindpassword: ""
+ldap_usetls: true
+ldap_autoimportusers: true
+ldap_userfilter: "(&(objectClass=posixAccount)(uid={USERNAME}))"
+ldap_defaultuserprofile: "READER"
+ldap_displaynameattribute: "cn"
+ldap_emailattribute: "mail"
+ldap_enablegroups: true
+ldap_groupfilter: "(&(objectClass=posixGroup)(memberUid={USERDN}))"
+ldap_groupnameattribute: "cn"
+ldap_groupprofiles: []
+ldap_authorizedgroups: "dss-users"

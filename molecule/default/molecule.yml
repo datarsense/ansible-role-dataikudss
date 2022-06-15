@@ -5,10 +5,18 @@ driver:
   name: docker
 platforms:
   - name: instance
-    image: python:slim-buster
+    image: python:3.7.13-slim-buster
     pre_build_image: true
 provisioner:
-  name: ansible    
+  name: ansible
+  inventory:
+    host_vars:
+      instance:
+        ansible_python_interpreter: "/usr/local/bin/python3"
 verifier:
   name: ansible
+  inventory:
+    host_vars:
+      instance:
+        ansible_python_interpreter: "/usr/local/bin/python3"
 

@@ -51,7 +51,7 @@
 - name: Create dss data directory
   become: true
   file:
-    path: "{{dss_data_dirs_location}}"
+    path: "/home/{{dss_service_user}}/{{datadir}}"
     state: directory
     owner: "{{dss_service_user}}"
     mode: "u=rwx,g=,o="
