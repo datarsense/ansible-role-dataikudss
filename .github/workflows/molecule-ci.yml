@@ -13,5 +13,5 @@ jobs:
       - name: Test with molecule
         run: |
           ansible-galaxy install -r requirements.yml
-          echo ${{ secrets.LICENSE }} > license.json
+          echo "${{ secrets.LICENSE }}" > license.json
           molecule test
