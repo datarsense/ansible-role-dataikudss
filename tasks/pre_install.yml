@@ -14,7 +14,7 @@
 
 - name: Disable SELinux
   become: true
-  selinux:
+  ansible.posix.selinux:
     state: disabled
   ignore_errors: yes
   tags: [setup]
@@ -46,6 +46,7 @@
     user: "{{ ansible_user_id }}"
     runas: "{{ dss_service_user }}"
     commands: ALL
+  when: ansible_user_id != 'root'
 
 - name: Create dss install directory
   become: true
