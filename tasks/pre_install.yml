@@ -16,7 +16,8 @@
   become: true
   ansible.posix.selinux:
     state: disabled
-  ignore_errors: yes
+  register: result
+  failed_when: result.msg | default('ok', True) is not search('(^ok$|libselinux-python|(SELinux state changed))')
   tags: [setup]
 
 - name: Increase system limits as required by DSS
