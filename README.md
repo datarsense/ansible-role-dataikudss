@@ -15,6 +15,16 @@ Install the requirements with the following command :
 ansible-galaxy install -r requirements.yml
 ```
 
+The account used for running playbook must have **sudo** privileges on the remote environment and must be allowed to become :
+  - **root** for pre-install stage (installing packages, creating the dss servie user)
+  - **dss service user** for DSS install as DSS is not run as root.
+
+If ansible-playbook in executed with a non-root user on the remote environment, the following configuration is added by this role in `/etc/sudoers` to allow this non-root user to act on behalt of the dataiku service account.
+
+```
+non-root-user ALL = (dataiku) NOPASSWD: ALL
+```
+
 Role Variables
 --------------
 
@@ -47,7 +57,7 @@ Example Playbook
       include_role:
         name: {{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}
       vars:
-        dataiku_user_home: /home/dataiku
+        dss_version: "10.0.7"
 ```
 
 License
