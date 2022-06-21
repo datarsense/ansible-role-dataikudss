@@ -41,6 +41,7 @@
   tags: [setup, dss-setup]
 
 - name: Allow the admin executing playbook to run any commands as DSS service user
+  become: true
   community.general.sudoers:
     name: enable-sudoer-admin-runas-dss-account
     state: present
