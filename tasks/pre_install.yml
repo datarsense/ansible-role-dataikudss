@@ -37,18 +37,19 @@
   user:
     name: "{{dss_service_user}}"
     home: "{{dss_service_user_home_basedir}}/{{dss_service_user}}"
+    shell: "/bin/bash"
     state: present
   tags: [setup, dss-setup]
 
-- name: Allow the admin executing playbook to run any commands as DSS service user
+- name: Allow admin group executing playbook to run any commands as DSS service user
   become: true
   community.general.sudoers:
     name: enable-sudoer-admin-runas-dss-account
     state: present
-    user: "{{ ansible_user_id }}"
+    group: "{{ dss_service_user_allowed_sudoers_group }}"
     runas: "{{ dss_service_user }}"
     commands: ALL
-  when: ansible_user_id != 'root'
+  when: dss_service_user_allowed_sudoers_group|length > 0
 
 - name: Create dss install directory
   become: true
