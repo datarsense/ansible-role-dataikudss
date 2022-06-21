@@ -13,6 +13,10 @@ type: design
 datadir: dss_data
 port: 10000
 
+configure_spark: "true"
+dss_hadoop_package: "dataiku-dss-hadoop-standalone-libs-generic-hadoop3-10.0.7.tar.gz"
+dss_spark_package: "dataiku-dss-spark-standalone-10.0.7-3.1.2-generic-hadoop3.tar.gz"
+
 configure_ldap_settings: "true"
 ldap_url: "ldap://ldap.internal.example.com/dc=example,dc=com"
 ldap_binddn: "uid=readonly,ou=users,dc=example,dc=com"
