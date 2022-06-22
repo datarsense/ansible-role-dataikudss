@@ -18,4 +18,4 @@ jobs:
       - name: Test with molecule
         run: |
           ansible-galaxy install -r requirements.yml
-          molecule test
+          molecule test -- -vvv

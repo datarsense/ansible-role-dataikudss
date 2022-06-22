@@ -17,7 +17,7 @@
       - unzip
       - zip
       - default-jre-headless
-      - python2.7 
+      - python2.7
       - libpython2.7 
       - libfreetype6 
       - libgomp1
