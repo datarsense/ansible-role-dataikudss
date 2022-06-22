@@ -46,10 +46,9 @@
   community.general.sudoers:
     name: enable-sudoer-admin-runas-dss-account
     state: present
-    group: "{{ dss_service_user_allowed_sudoers_group }}"
+    user: "{{ ansible_user_id }}"
     runas: "{{ dss_service_user }}"
     commands: ALL
-  when: dss_service_user_allowed_sudoers_group|length > 0
 
 - name: Create dss install directory
   become: true
