@@ -35,6 +35,7 @@ Role Variables
 |dss_version| "10.0.7" |
 |dss_api_version| "5.1" |
 |dss_service_user| dataiku |
+|dss_service_user_shell| "/bin/bash" |
 |dss_service_user_home_basedir| /home |
 |dss_install_dir_location| /opt/dataiku |
 |datadir| dss_data |
