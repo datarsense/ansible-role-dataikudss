@@ -1,6 +1,7 @@
 ---
 
 - name: Installing dependencies
+  become: true
   apt:
     name: "{{ packages }}"
     state: present
@@ -21,6 +22,7 @@
       - libgomp1
 
 - name: Installing Debian 10 specific packages
+  become: true
   apt:
     name: "{{ packages }}"
     state: present
@@ -30,20 +32,20 @@
       - python3-distutils
       - python3-pip
       - python3-setuptools
-  become: True
   when: ansible_facts['os_family'] == 'Debian' and ansible_facts ['distribution_major_version'] == '10'
 
 - name: Installing Ubuntu 16.04 specific packages
+  become: true
   apt:
     name: "{{ packages }}"
     state: present
   vars:
     packages:
       - python3.6
-  become: True
   when: ansible_facts['os_family'] == 'Ubuntu' and ansible_facts ['distribution_major_version'] == '16.04'
 
 - name: Installing Ubuntu 18.04 specific packages
+  become: true
   apt:
     name: "{{ packages }}"
     state: present
@@ -51,15 +53,14 @@
     packages:
       - python3.6
       - python3-distutils
-  become: True
   when: ansible_facts['os_family'] == 'Ubuntu' and ansible_facts ['distribution_major_version'] == '18.04'
 
 - name: Installing Ubuntu 20.04 specific packages
+  become: true
   apt:
     name: "{{ packages }}"
     state: present
   vars:
     packages:
       - python3.7
-  become: True
   when: ansible_facts['os_family'] == 'Ubuntu' and ansible_facts ['distribution_major_version'] == '20.04'
