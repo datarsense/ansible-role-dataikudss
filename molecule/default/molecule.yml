@@ -4,19 +4,19 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: instance
-    image: python:3.7.13-slim-buster
-    pre_build_image: true
+  - name: molecule-debian10
+    image: ${MOLECULE_IMAGE:-docker.io/debian:buster}
+    pre_build_image: false
 provisioner:
   name: ansible
   inventory:
     host_vars:
       instance:
-        ansible_python_interpreter: "/usr/local/bin/python3"
+        ansible_python_interpreter: "/usr/bin/python3"
 verifier:
   name: ansible
   inventory:
     host_vars:
       instance:
-        ansible_python_interpreter: "/usr/local/bin/python3"
+        ansible_python_interpreter: "/usr/bin/python3"
 
