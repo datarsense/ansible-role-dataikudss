@@ -58,6 +58,42 @@
     creates: "/etc/init.d/dataiku.{{datadir}}"
   tags: [dss]
 
+- name: Download Hadoop package
+  when: configure_spark|bool
+  become: true
+  become_user: "{{dss_service_user}}"
+  get_url:
+    url: "{{dss_base_repository_url}}/{{dss_version}}/{{dss_hadoop_package}}"
+    dest: "{{dss_install_dir_location}}/{{dss_hadoop_package}}"
+  tags: [setup, dss-setup]
+
+- name: Install standalone Hadoop support
+  when: configure_spark|bool
+  become: true
+  become_user: "{{dss_service_user}}"
+  command: "{{dss_service_user_home_basedir}}/{{dss_service_user}}/{{datadir}}/bin/dssadmin install-hadoop-integration -standaloneArchive {{dss_install_dir_location}}/{{dss_hadoop_package}}"
+  args:
+    creates: "{{dss_service_user_home_basedir}}/{{dss_service_user}}/{{datadir}}/bin/env-hadoop.sh"
+  tags: [dss]
+
+- name: Download Spark package
+  when: configure_spark|bool
+  become: true
+  become_user: "{{dss_service_user}}"
+  get_url:
+    url: "{{dss_base_repository_url}}/{{dss_version}}/{{dss_spark_package}}"
+    dest: "{{dss_install_dir_location}}/{{dss_spark_package}}"
+  tags: [setup, dss-setup]
+
+- name: Install standalone Spark support
+  when: configure_spark|bool
+  become: true
+  become_user: "{{dss_service_user}}"
+  command: "{{dss_service_user_home_basedir}}/{{dss_service_user}}/{{datadir}}/bin/dssadmin install-spark-integration -standaloneArchive {{dss_install_dir_location}}/{{dss_spark_package}}"
+  args:
+    creates: "{{dss_service_user_home_basedir}}/{{dss_service_user}}/{{datadir}}/bin/env-spark.sh"
+  tags: [dss]
+
 - name: Start the studios
   become: true
   service:

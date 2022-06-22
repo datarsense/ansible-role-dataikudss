@@ -5,6 +5,7 @@ An Ansible role automating Dataiku DSS deployment.
 
 Requirements
 ------------
+**Python 3.8 or newer** is required to make this role work.
 
 The following modules provided by dataiku are required for DSS config automation :
   - https://github.com/dataiku/dataiku-ansible-modules
@@ -19,7 +20,7 @@ The account used for running playbook must have **sudo** privileges on the remot
   - **root** for pre-install stage (installing packages, creating the dss servie user)
   - **dss service user** for DSS install as DSS is not run as root.
 
-If ansible-playbook in executed with a non-root user on the remote environment, the following configuration is added by this role in `/etc/sudoers` to allow this non-root user to act on behalt of the dataiku service account.
+If ansible-playbook in executed with a non-root user on the remote environment, the following configuration is added by this role in `/etc/sudoers.d` to allow this non-root user to act on behalt of the dataiku service account.
 
 ```
 non-root-user ALL = (dataiku) NOPASSWD: ALL
@@ -35,6 +36,7 @@ Role Variables
 |dss_api_version| "5.1" |
 |dss_service_user| dataiku |
 |dss_service_user_home_basedir| /home |
+|dss_service_user_allowed_sudoers_group | "sudo" |
 |dss_install_dir_location| /opt/dataiku |
 |datadir| dss_data |
 |dss_node_poll_fqdn| true # If true, use ansible_fqdn else |use ansible_host |
@@ -42,7 +44,6 @@ Role Variables
 
 Dependencies
 ------------
-
 
 
 Example Playbook
