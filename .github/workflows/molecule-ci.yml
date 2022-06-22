@@ -8,8 +8,6 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install dependencies
         run: |
-          sudo apt-get install -y python
-          sudo apt-get install -y python-is-python3
           python3 -m pip install --upgrade pip setuptools
           python3 -m pip install --upgrade ansible molecule molecule-docker
       - name: Write license file without logging its content

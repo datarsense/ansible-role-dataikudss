@@ -17,6 +17,7 @@
       - default-jre-headless
       - python2.7 
       - libpython2.7 
+      - python2-minimal
       - libfreetype6 
       - libgomp1
 
