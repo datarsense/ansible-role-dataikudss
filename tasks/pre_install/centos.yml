@@ -7,6 +7,7 @@
   vars:
     packages:
       - sudo
+  when: ansible_facts['os_family'] == 'RedHat' and ansible_facts ['distribution_major_version'] == '7'
 
 - name: Enable EPEL Repository on CentOS 7
   become: true
@@ -23,6 +24,7 @@
   vars:
     packages:
       - sudo
+  when: ansible_facts['os_family'] == 'RedHat' and ansible_facts ['distribution_major_version'] == '8'
 
 - name: Enable EPEL Repository on CentOS 8
   become: true
