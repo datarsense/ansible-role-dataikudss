@@ -47,6 +47,11 @@
       - unzip
       - zip
       - java-1.8.0-openjdk
+      - freetype 
+      - libgfortran 
+      - libgomp
+      - python3-setuptools
+      - python-setuptools
 
 - name: Installing CentOS 7 sepecific packages
   become: true
@@ -55,10 +60,7 @@
     state: present
   vars:
     packages:
-      - python3 
-      - freetype 
-      - libgfortran 
-      - libgomp
+      - python3
   when: ansible_facts['os_family'] == 'RedHat' and ansible_facts ['distribution_major_version'] == '7'
 
 - name: Installing CentOS 8 sepecific packages
@@ -71,7 +73,4 @@
       - ncurses-compat-libs
       - python2 
       - python36 
-      - freetype 
-      - libgfortran 
-      - libgomp
   when: ansible_facts['os_family'] == 'RedHat' and ansible_facts ['distribution_major_version'] == '8'
