@@ -1,4 +1,11 @@
 ---
+- name: Installing sudo package
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - sudo
 
 - name: Installing dependencies
   become: true
