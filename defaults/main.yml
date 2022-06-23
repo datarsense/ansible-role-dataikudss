@@ -1,6 +1,11 @@
 ---
-# defaults file for ansible-role-dss
+# Defaults variables for ansible-role-dss
+
+# Settings for DSS deployment. 
+# License file is not provided by the role. The dss_license_file variable 
+# has to be changed according to the license.json file location on the host executing ansible-playbok
 dss_base_repository_url: https://cdn.downloads.dataiku.com/public/studio
+dataiku_python_api_package : "git+https://github.com/dataiku/dataiku-api-client-python@release/5.1#egg=dataiku-api-client"
 dss_version: "10.0.7"
 dss_api_version: "5.1"
 dss_service_user: dataiku
@@ -13,11 +18,13 @@ type: design
 datadir: dss_data
 port: 10000
 
+# Optional : add dss spark support
 configure_spark: "true"
 dss_hadoop_package: "dataiku-dss-hadoop-standalone-libs-generic-hadoop3-10.0.7.tar.gz"
 dss_spark_package: "dataiku-dss-spark-standalone-10.0.7-3.1.2-generic-hadoop3.tar.gz"
 
-configure_ldap_settings: "true"
+# Optional : add LDAP login capability
+configure_ldap_settings: "false"
 ldap_url: "ldap://ldap.internal.example.com/dc=example,dc=com"
 ldap_binddn: "uid=readonly,ou=users,dc=example,dc=com"
 ldap_bindpassword: ""

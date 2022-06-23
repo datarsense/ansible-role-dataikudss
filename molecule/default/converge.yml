@@ -7,3 +7,4 @@
         name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
       vars:
         dss_version: "10.0.7"
+        configure_ldap_settings: "true"

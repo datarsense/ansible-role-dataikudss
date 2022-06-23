@@ -32,6 +32,7 @@ Role Variables
 | Variable | Default value |
 |----------|-------------|
 |dss_base_repository_url | https://cdn.downloads.dataiku.com/public/studio |
+|dataiku_python_api_package | "git+https://github.com/dataiku/dataiku-api-client-python@release/5.1#egg=dataiku-api-client" |
 |dss_version| "10.0.7" |
 |dss_api_version| "5.1" |
 |dss_service_user| dataiku |
@@ -41,6 +42,9 @@ Role Variables
 |datadir| dss_data |
 |dss_node_poll_fqdn| true # If true, use ansible_fqdn else |use ansible_host |
 |dss_license_file| license.json |
+|type | design |
+|datadir | dss_data |
+|port | 10000 |
 
 Dependencies
 ------------
