@@ -35,8 +35,8 @@ Role Variables
 |dss_version| "10.0.7" |
 |dss_api_version| "5.1" |
 |dss_service_user| dataiku |
+|dss_service_user_shell| "/bin/bash" |
 |dss_service_user_home_basedir| /home |
-|dss_service_user_allowed_sudoers_group | "sudo" |
 |dss_install_dir_location| /opt/dataiku |
 |datadir| dss_data |
 |dss_node_poll_fqdn| true # If true, use ansible_fqdn else |use ansible_host |

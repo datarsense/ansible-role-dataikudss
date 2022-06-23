@@ -9,7 +9,7 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip setuptools
-          python3 -m pip install --upgrade ansible molecule molecule-docker
+          python3 -m pip install --upgrade ansible==5.9.0 molecule molecule-docker
       - name: Write license file without logging its content
         run: 'echo "$LICENSE" > license.json'
         shell: bash

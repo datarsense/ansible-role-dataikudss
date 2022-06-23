@@ -7,7 +7,6 @@
     datadir: "{{dss_service_user_home_basedir}}/{{dss_service_user}}/{{datadir}}"
     api_key_name: ansible
   register: dss_connection_info
-  ignore_errors: yes
   tags: [dss-config]
 
 - name: Configure LDAP settings
