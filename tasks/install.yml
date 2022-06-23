@@ -29,7 +29,7 @@
 - name: Install Dataiku python API
   become: true
   pip:
-    name: "git+https://github.com/dataiku/dataiku-api-client-python@release/5.1#egg=dataiku-api-client"
+    name: "{{ dataiku_python_api_package }}"
     state: latest
     executable: pip3
     #state: forcereinstall # Useful when release/5.1 gets updated
