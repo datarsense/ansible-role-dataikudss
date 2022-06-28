@@ -100,8 +100,4 @@
     name: "dataiku.{{datadir}}"
     state: started
     enabled: true
-  register: dssServiceDetails
-  until: dssServiceDetails.status.ActiveState == "active"
-  retries: 5
-  delay: 30
   tags: [dss]
