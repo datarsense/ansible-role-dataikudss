@@ -9,9 +9,13 @@ platforms:
     pre_build_image: false
   - name: molecule-centos7
     image: ${MOLECULE_IMAGE:-docker.io/centos:7}
-    pre_build_image: false
     privileged: true
-    volumes: '/sys/fs/cgroup:/sys/fs/cgroup'
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:rw"
+    command: "/usr/sbin/init"
+    tty: True
+    env:
+      container: docker
 provisioner:
   name: ansible
   inventory:
