@@ -53,6 +53,7 @@
       - python3-setuptools
       - python-setuptools
       - python-six
+      - python-requests
 
 - name: Installing CentOS 7 sepecific packages
   become: true
