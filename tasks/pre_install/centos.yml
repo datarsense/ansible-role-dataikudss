@@ -52,6 +52,7 @@
       - libgomp
       - python3-setuptools
       - python-setuptools
+      - python-six
 
 - name: Installing CentOS 7 sepecific packages
   become: true
