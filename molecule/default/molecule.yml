@@ -18,6 +18,7 @@ platforms:
       container: docker
   - name: molecule-centos8
     image: ${MOLECULE_IMAGE:-docker.io/centos:8}
+    dockerfile: Dockerfile-centos8.j2
     privileged: true
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:rw"
