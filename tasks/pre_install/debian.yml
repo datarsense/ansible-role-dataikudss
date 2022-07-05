@@ -1,4 +1,11 @@
 ---
+- name: Installing sudo package
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - sudo
 
 - name: Installing dependencies
   become: true
@@ -33,6 +40,8 @@
       - python3-distutils
       - python3-pip
       - python3-setuptools
+      - python2-minimal
+      - python-six
   when: ansible_facts['os_family'] == 'Debian' and ansible_facts ['distribution_major_version'] == '10'
 
 - name: Installing Ubuntu 16.04 specific packages

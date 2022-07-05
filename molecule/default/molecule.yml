@@ -7,6 +7,25 @@ platforms:
   - name: molecule-debian10
     image: ${MOLECULE_IMAGE:-docker.io/debian:buster}
     pre_build_image: false
+  - name: molecule-centos7
+    image: ${MOLECULE_IMAGE:-docker.io/centos:7}
+    privileged: true
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:rw"
+    command: "/usr/sbin/init"
+    tty: True
+    env:
+      container: docker
+  - name: molecule-centos8
+    image: ${MOLECULE_IMAGE:-docker.io/centos:8}
+    dockerfile: Dockerfile-centos8.j2
+    privileged: true
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:rw"
+    command: "/usr/sbin/init"
+    tty: True
+    env:
+      container: docker
 provisioner:
   name: ansible
   inventory:

@@ -4,13 +4,11 @@
     dss_node_hostname: "{{ansible_fqdn if dss_node_poll_fqdn else ansible_host}}"
   tags: [setup,dss-setup,dss]
 
-- name: Installing system requirements
-  apt:
-    name: "{{ packages }}"
-    state: present
-  vars:
-    packages:
-      - sudo
+- import_tasks: pre_install/debian.yml
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- import_tasks: pre_install/centos.yml
+  when: ansible_distribution == 'CentOS'
 
 - name: Disable SELinux
   become: true
@@ -67,9 +65,3 @@
     owner: "{{dss_service_user}}"
     mode: "u=rwx,g=,o="
   tags: [setup, dss-setup]
-
-- import_tasks: pre_install/debian.yml
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
-
-- import_tasks: pre_install/centos.yml
-  when: ansible_distribution == 'CentOS'
