@@ -50,7 +50,7 @@
 
 - name: Create dss install directory
   become: true
-   ansible.builtin.file:
+  ansible.builtin.file:
     path: "{{ dss_install_dir_location }}"
     state: directory
     owner: "{{ dss_service_user }}"
@@ -59,7 +59,7 @@
 
 - name: Create dss data directory
   become: true
-   ansible.builtin.file:
+  ansible.builtin.file:
     path: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}"
     state: directory
     owner: "{{ dss_service_user }}"
