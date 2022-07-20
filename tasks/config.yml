@@ -16,19 +16,19 @@
     settings:
       ldapSettings:
         enabled: true
-        url: "{{ldap_url}}"
-        bindDN: "{{ldap_binddn}}"
-        bindPassword: "{{ldap_bindpassword}}"
-        useTls: "{{ldap_usetls}}"
-        autoImportUsers: "{{ldap_autoimportusers}}"
-        userFilter: "{{ldap_userfilter}}"
-        defaultUserProfile: "{{ldap_defaultuserprofile}}"
-        displayNameAttribute: "{{ldap_displaynameattribute}}"
-        emailAttribute: "{{ldap_emailattribute}}"
-        enableGroups: "{{ldap_enablegroups}}"
-        groupFilter: "{{ldap_groupfilter}}"
-        groupNameAttribute: "{{ldap_groupnameattribute}}"
-        groupProfiles: "{{ldap_groupprofiles}}"
-        authorizedGroups: "{{ldap_authorizedgroups}}"
+        url: "{{ ldap_url }}"
+        bindDN: "{{ ldap_binddn }}"
+        bindPassword: "{{ ldap_bindpassword }}"
+        useTls: "{{ ldap_usetls }}"
+        autoImportUsers: "{{ ldap_autoimportusers }}"
+        userFilter: "{{ ldap_userfilter }}"
+        defaultUserProfile: "{{ ldap_defaultuserprofile }}"
+        displayNameAttribute: "{{ ldap_displaynameattribute }}"
+        emailAttribute: "{{ ldap_emailattribute }}"
+        enableGroups: "{{ ldap_enablegroups }}"
+        groupFilter: "{{ ldap_groupfilter }}"
+        groupNameAttribute: "{{ ldap_groupnameattribute }}"
+        groupProfiles: "{{ ldap_groupprofiles }}"
+        authorizedGroups: "{{ ldap_authorizedgroups }}"
   ignore_errors: yes
   tags: [dss-config]
