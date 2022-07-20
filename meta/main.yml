@@ -26,4 +26,4 @@ galaxy_info:
     - dss
 
 dependencies:
-  - dataiku-ansible-modules
+  - dataiku.dataiku-ansible-modules
