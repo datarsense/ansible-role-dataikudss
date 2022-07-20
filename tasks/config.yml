@@ -2,9 +2,9 @@
 
 - name: Retrieve API Credentials
   become: true
-  become_user: "{{dss_service_user}}"
+  become_user: "{{ dss_service_user }}"
   dss_get_credentials:
-    datadir: "{{dss_service_user_home_basedir}}/{{dss_service_user}}/{{datadir}}"
+    datadir: "{{dss_service_user_home_basedir}}/{{ dss_service_user }}/{{datadir}}"
     api_key_name: ansible
   register: dss_connection_info
   tags: [dss-config]
