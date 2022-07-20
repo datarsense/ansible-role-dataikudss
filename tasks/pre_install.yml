@@ -1,7 +1,7 @@
 ---
 - name: Set per-host facts
   set_fact:
-    dss_node_hostname: "{{ansible_fqdn if dss_node_poll_fqdn else ansible_host}}"
+    dss_node_hostname: "{{ ansible_fqdn if dss_node_poll_fqdn else ansible_host }}"
   tags: [setup, dss-setup, dss]
 
 - import_tasks: pre_install/debian.yml
@@ -34,7 +34,7 @@
   become: true
   user:
     name: "{{ dss_service_user }}"
-    home: "{{dss_service_user_home_basedir}}/{{ dss_service_user }}"
+    home: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}"
     shell: "{{dss_service_user_shell}}"
     state: present
   tags: [setup, dss-setup]
@@ -60,7 +60,7 @@
 - name: Create dss data directory
   become: true
   file:
-    path: "{{dss_service_user_home_basedir}}/{{ dss_service_user }}/{{datadir}}"
+    path: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}"
     state: directory
     owner: "{{ dss_service_user }}"
     mode: "u=rwx,g=,o="

@@ -3,7 +3,7 @@
   become: true
   become_user: "{{ dss_service_user }}"
   get_url:
-    url: "{{dss_base_repository_url}}/{{ dss_version }}/dataiku-dss-{{ dss_version }}.tar.gz"
+    url: "{{ dss_base_repository_url }}/{{ dss_version }}/dataiku-dss-{{ dss_version }}.tar.gz"
     dest: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}.tar.gz"
   tags: [setup, dss-setup]
 
@@ -38,24 +38,24 @@
 - name: Run the Dataiku DSS installer
   become: true
   become_user: "{{ dss_service_user }}"
-  command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/installer.sh -d {{dss_service_user_home_basedir}}/{{ dss_service_user }}/{{datadir}} -p {{port}} -t {{type}}"
+  command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/installer.sh -d {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }} -p {{port}} -t {{type}}"
   args:
-    creates: "{{dss_service_user_home_basedir}}/{{ dss_service_user }}/{{datadir}}/dss-version.json"
+    creates: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/dss-version.json"
   tags: [dss]
 
 - name: Copy license file
   become: true
   become_user: "{{ dss_service_user }}"
   copy:
-    src: "{{dss_license_file}}"
-    dest: "{{dss_service_user_home_basedir}}/{{ dss_service_user }}/{{datadir}}/config/license.json"
+    src: "{{ dss_license_file }}"
+    dest: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/config/license.json"
   tags: [dss]
 
 - name: Install boot service
   become: true
-  command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/scripts/install/install-boot.sh -n {{datadir}} {{dss_service_user_home_basedir}}/{{ dss_service_user }}/{{datadir}} dataiku"
+  command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/scripts/install/install-boot.sh -n {{ datadir }} {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }} dataiku"
   args:
-    creates: "/etc/init.d/dataiku.{{datadir}}"
+    creates: "/etc/init.d/dataiku.{{ datadir }}"
   tags: [dss]
 
 - name: Download Hadoop package
@@ -63,7 +63,7 @@
   become: true
   become_user: "{{ dss_service_user }}"
   get_url:
-    url: "{{dss_base_repository_url}}/{{ dss_version }}/{{dss_hadoop_package}}"
+    url: "{{ dss_base_repository_url }}/{{ dss_version }}/{{dss_hadoop_package}}"
     dest: "{{ dss_install_dir_location }}/{{dss_hadoop_package}}"
   tags: [setup, dss-setup]
 
@@ -71,9 +71,9 @@
   when: configure_spark|bool
   become: true
   become_user: "{{ dss_service_user }}"
-  command: "{{dss_service_user_home_basedir}}/{{ dss_service_user }}/{{datadir}}/bin/dssadmin install-hadoop-integration -standaloneArchive {{ dss_install_dir_location }}/{{dss_hadoop_package}}"
+  command: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/bin/dssadmin install-hadoop-integration -standaloneArchive {{ dss_install_dir_location }}/{{dss_hadoop_package}}"
   args:
-    creates: "{{dss_service_user_home_basedir}}/{{ dss_service_user }}/{{datadir}}/bin/env-hadoop.sh"
+    creates: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/bin/env-hadoop.sh"
   tags: [dss]
 
 - name: Download Spark package
@@ -81,7 +81,7 @@
   become: true
   become_user: "{{ dss_service_user }}"
   get_url:
-    url: "{{dss_base_repository_url}}/{{ dss_version }}/{{dss_spark_package}}"
+    url: "{{ dss_base_repository_url }}/{{ dss_version }}/{{dss_spark_package}}"
     dest: "{{ dss_install_dir_location }}/{{dss_spark_package}}"
   tags: [setup, dss-setup]
 
@@ -89,15 +89,15 @@
   when: configure_spark|bool
   become: true
   become_user: "{{ dss_service_user }}"
-  command: "{{dss_service_user_home_basedir}}/{{ dss_service_user }}/{{datadir}}/bin/dssadmin install-spark-integration -standaloneArchive {{ dss_install_dir_location }}/{{dss_spark_package}}"
+  command: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/bin/dssadmin install-spark-integration -standaloneArchive {{ dss_install_dir_location }}/{{dss_spark_package}}"
   args:
-    creates: "{{dss_service_user_home_basedir}}/{{ dss_service_user }}/{{datadir}}/bin/env-spark.sh"
+    creates: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/bin/env-spark.sh"
   tags: [dss]
 
 - name: Start the studios
   become: true
   service:
-    name: "dataiku.{{datadir}}"
+    name: "dataiku.{{ datadir }}"
     state: started
     enabled: true
   tags: [dss]
