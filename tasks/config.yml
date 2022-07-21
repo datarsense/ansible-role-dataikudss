@@ -2,9 +2,9 @@
 
 - name: Retrieve API Credentials
   become: true
-  become_user: "{{dss_service_user}}"
+  become_user: "{{ dss_service_user }}"
   dss_get_credentials:
-    datadir: "{{dss_service_user_home_basedir}}/{{dss_service_user}}/{{datadir}}"
+    datadir: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}"
     api_key_name: ansible
   register: dss_connection_info
   tags: [dss-config]
@@ -12,23 +12,23 @@
 - name: Configure LDAP settings
   when: configure_ldap_settings|bool
   dss_general_settings:
-    connect_to: "{{dss_connection_info}}"
+    connect_to: "{{ dss_connection_info }}"
     settings:
       ldapSettings:
         enabled: true
-        url: "{{ldap_url}}"
-        bindDN: "{{ldap_binddn}}"
-        bindPassword: "{{ldap_bindpassword}}"
-        useTls: "{{ldap_usetls}}"
-        autoImportUsers: "{{ldap_autoimportusers}}"
-        userFilter: "{{ldap_userfilter}}"
-        defaultUserProfile: "{{ldap_defaultuserprofile}}"
-        displayNameAttribute: "{{ldap_displaynameattribute}}"
-        emailAttribute: "{{ldap_emailattribute}}"
-        enableGroups: "{{ldap_enablegroups}}"
-        groupFilter: "{{ldap_groupfilter}}"
-        groupNameAttribute: "{{ldap_groupnameattribute}}"
-        groupProfiles: "{{ldap_groupprofiles}}"
-        authorizedGroups: "{{ldap_authorizedgroups}}"
+        url: "{{ ldap_url }}"
+        bindDN: "{{ ldap_binddn }}"
+        bindPassword: "{{ ldap_bindpassword }}"
+        useTls: "{{ ldap_usetls }}"
+        autoImportUsers: "{{ ldap_autoimportusers }}"
+        userFilter: "{{ ldap_userfilter }}"
+        defaultUserProfile: "{{ ldap_defaultuserprofile }}"
+        displayNameAttribute: "{{ ldap_displaynameattribute }}"
+        emailAttribute: "{{ ldap_emailattribute }}"
+        enableGroups: "{{ ldap_enablegroups }}"
+        groupFilter: "{{ ldap_groupfilter }}"
+        groupNameAttribute: "{{ ldap_groupnameattribute }}"
+        groupProfiles: "{{ ldap_groupprofiles }}"
+        authorizedGroups: "{{ ldap_authorizedgroups }}"
   ignore_errors: yes
   tags: [dss-config]

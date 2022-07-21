@@ -1,6 +1,6 @@
 ---
 - name: Installing sudo package
-  apt:
+  ansible.builtin.apt:
     name: "{{ packages }}"
     state: present
   vars:
@@ -9,7 +9,7 @@
 
 - name: Installing dependencies
   become: true
-  apt:
+  ansible.builtin.apt:
     name: "{{ packages }}"
     state: present
     update_cache: yes
@@ -31,7 +31,7 @@
 
 - name: Installing Debian 10 specific packages
   become: true
-  apt:
+  ansible.builtin.apt:
     name: "{{ packages }}"
     state: present
   vars:
@@ -46,7 +46,7 @@
 
 - name: Installing Ubuntu 16.04 specific packages
   become: true
-  apt:
+  ansible.builtin.apt:
     name: "{{ packages }}"
     state: present
   vars:
@@ -56,7 +56,7 @@
 
 - name: Installing Ubuntu 18.04 specific packages
   become: true
-  apt:
+  ansible.builtin.apt:
     name: "{{ packages }}"
     state: present
   vars:
@@ -67,7 +67,7 @@
 
 - name: Installing Ubuntu 20.04 specific packages
   become: true
-  apt:
+  ansible.builtin.apt:
     name: "{{ packages }}"
     state: present
   vars:

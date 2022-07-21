@@ -3,7 +3,7 @@
   hosts: all
   tasks:
     - name: "Include datarsense.dataikudss"
-      include_role:
+      ansible.builtin.include_role:
         name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
       vars:
         dss_version: "10.0.7"
