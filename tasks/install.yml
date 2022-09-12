@@ -1,34 +1,35 @@
 ---
 - name: Download DSS
   become: true
-  become_user: "{{dss_service_user}}"
-  get_url:
-    url: "{{dss_base_repository_url}}/{{dss_version}}/dataiku-dss-{{dss_version}}.tar.gz"
-    dest: "{{dss_install_dir_location}}/dataiku-dss-{{dss_version}}.tar.gz"
+  become_user: "{{ dss_service_user }}"
+  ansible.builtin.get_url:
+    url: "{{ dss_base_repository_url }}/{{ dss_version }}/dataiku-dss-{{ dss_version }}.tar.gz"
+    dest: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}.tar.gz"
+    mode: '644'
   tags: [setup, dss-setup]
 
 - name: Unarchive DSS
   become: true
-  become_user: "{{dss_service_user}}"
-  unarchive:
-    src: "{{dss_install_dir_location}}/dataiku-dss-{{dss_version}}.tar.gz"
-    dest: "{{dss_install_dir_location}}"
-    creates: "{{dss_install_dir_location}}/dataiku-dss-{{dss_version}}"
+  become_user: "{{ dss_service_user }}"
+  ansible.builtin.unarchive:
+    src: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}.tar.gz"
+    dest: "{{ dss_install_dir_location }}"
+    creates: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}"
     remote_src: yes
   tags: [setup, dss-setup]
 
 - name: Install DSS dependencies
   become: true
-  shell:
+  ansible.builtin.shell:
     cmd: |
-      {{dss_install_dir_location}}/dataiku-dss-{{dss_version}}/scripts/install/install-deps.sh -yes 2>&1 > /tmp/dss-install-deps.log
-      touch {{dss_install_dir_location}}/dataiku-dss-{{dss_version}}/scripts/install/DEPS-INSTALLED
-    creates: "{{dss_install_dir_location}}/dataiku-dss-{{dss_version}}/scripts/install/DEPS-INSTALLED"
+      {{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/scripts/install/install-deps.sh -yes 2>&1 > /tmp/dss-install-deps.log
+      touch {{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/scripts/install/DEPS-INSTALLED
+    creates: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/scripts/install/DEPS-INSTALLED"
   tags: [setup, dss-setup]
 
 - name: Install Dataiku python API
   become: true
-  pip:
+  ansible.builtin.pip:
     name: "{{ dataiku_python_api_package }}"
     state: latest
     executable: pip3
@@ -37,67 +38,70 @@
 
 - name: Run the Dataiku DSS installer
   become: true
-  become_user: "{{dss_service_user}}"
-  command: "{{dss_install_dir_location}}/dataiku-dss-{{dss_version}}/installer.sh -d {{dss_service_user_home_basedir}}/{{dss_service_user}}/{{datadir}} -p {{port}} -t {{type}}"
+  become_user: "{{ dss_service_user }}"
+  ansible.builtin.command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/installer.sh -d {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }} -p {{ port }} -t {{ type }}"
   args:
-    creates: "{{dss_service_user_home_basedir}}/{{dss_service_user}}/{{datadir}}/dss-version.json"
+    creates: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/dss-version.json"
   tags: [dss]
 
 - name: Copy license file
   become: true
-  become_user: "{{dss_service_user}}"
-  copy:
-    src: "{{dss_license_file}}"
-    dest: "{{dss_service_user_home_basedir}}/{{dss_service_user}}/{{datadir}}/config/license.json"
+  become_user: "{{ dss_service_user }}"
+  ansible.builtin.copy:
+    src: "{{ dss_license_file }}"
+    dest: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/config/license.json"
+    mode: '644'
   tags: [dss]
 
 - name: Install boot service
   become: true
-  command: "{{dss_install_dir_location}}/dataiku-dss-{{dss_version}}/scripts/install/install-boot.sh -n {{datadir}} {{dss_service_user_home_basedir}}/{{dss_service_user}}/{{datadir}} dataiku"
+  ansible.builtin.command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/scripts/install/install-boot.sh -n {{ datadir }} {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }} dataiku"
   args:
-    creates: "/etc/init.d/dataiku.{{datadir}}"
+    creates: "/etc/init.d/dataiku.{{ datadir }}"
   tags: [dss]
 
 - name: Download Hadoop package
   when: configure_spark|bool
   become: true
-  become_user: "{{dss_service_user}}"
-  get_url:
-    url: "{{dss_base_repository_url}}/{{dss_version}}/{{dss_hadoop_package}}"
-    dest: "{{dss_install_dir_location}}/{{dss_hadoop_package}}"
+  become_user: "{{ dss_service_user }}"
+  ansible.builtin.get_url:
+    url: "{{ dss_base_repository_url }}/{{ dss_version }}/{{ dss_hadoop_package }}"
+    dest: "{{ dss_install_dir_location }}/{{ dss_hadoop_package }}"
+    mode: '644'
   tags: [setup, dss-setup]
 
 - name: Install standalone Hadoop support
   when: configure_spark|bool
   become: true
-  become_user: "{{dss_service_user}}"
-  command: "{{dss_service_user_home_basedir}}/{{dss_service_user}}/{{datadir}}/bin/dssadmin install-hadoop-integration -standaloneArchive {{dss_install_dir_location}}/{{dss_hadoop_package}}"
+  become_user: "{{ dss_service_user }}"
+  ansible.builtin.command: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/bin/dssadmin install-hadoop-integration -standaloneArchive {{ dss_install_dir_location }}/{{ dss_hadoop_package }}"
   args:
-    creates: "{{dss_service_user_home_basedir}}/{{dss_service_user}}/{{datadir}}/bin/env-hadoop.sh"
+    creates: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/bin/env-hadoop.sh"
   tags: [dss]
 
 - name: Download Spark package
   when: configure_spark|bool
   become: true
-  become_user: "{{dss_service_user}}"
-  get_url:
-    url: "{{dss_base_repository_url}}/{{dss_version}}/{{dss_spark_package}}"
-    dest: "{{dss_install_dir_location}}/{{dss_spark_package}}"
+  become_user: "{{ dss_service_user }}"
+  ansible.builtin.get_url:
+    url: "{{ dss_base_repository_url }}/{{ dss_version }}/{{ dss_spark_package }}"
+    dest: "{{ dss_install_dir_location }}/{{ dss_spark_package }}"
+    mode: '644'
   tags: [setup, dss-setup]
 
 - name: Install standalone Spark support
   when: configure_spark|bool
   become: true
-  become_user: "{{dss_service_user}}"
-  command: "{{dss_service_user_home_basedir}}/{{dss_service_user}}/{{datadir}}/bin/dssadmin install-spark-integration -standaloneArchive {{dss_install_dir_location}}/{{dss_spark_package}}"
+  become_user: "{{ dss_service_user }}"
+  ansible.builtin.command: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/bin/dssadmin install-spark-integration -standaloneArchive {{ dss_install_dir_location }}/{{ dss_spark_package }}"
   args:
-    creates: "{{dss_service_user_home_basedir}}/{{dss_service_user}}/{{datadir}}/bin/env-spark.sh"
+    creates: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/bin/env-spark.sh"
   tags: [dss]
 
 - name: Start the studios
   become: true
-  service:
-    name: "dataiku.{{datadir}}"
+  ansible.builtin.service:
+    name: "dataiku.{{ datadir }}"
     state: started
     enabled: true
   tags: [dss]

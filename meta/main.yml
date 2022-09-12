@@ -10,13 +10,8 @@ galaxy_info:
   platforms:
   - name: Debian
     versions:
-    - 9
-    - 10
-  - name: Ubuntu
-    versions:
-    - 18.04
-    - 20.04
-  - name: Centos
+    - buster
+  - name: EL
     versions:
     - 7
     - 8
@@ -26,4 +21,4 @@ galaxy_info:
     - dss
 
 dependencies:
-  - dataiku-ansible-modules
+  - dataiku.dataiku-ansible-modules

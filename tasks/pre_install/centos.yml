@@ -1,7 +1,7 @@
 ---
 # Default package manager in Centos 7 is YUM
 - name: Installing sudo package
-  yum:
+  ansible.builtin.yum:
     name: "{{ packages }}"
     state: present
   vars:
@@ -11,7 +11,7 @@
 
 - name: Enable EPEL Repository on CentOS 7
   become: true
-  yum:
+  ansible.builtin.yum:
     name: epel-release
     state: latest
   when: ansible_facts['os_family'] == 'RedHat' and ansible_facts ['distribution_major_version'] == '7'
@@ -19,7 +19,7 @@
 
 # Default package manager in Centos 8 is DNF
 - name: Installing sudo package
-  dnf:
+  ansible.builtin.dnf:
     name: "{{ packages }}"
     state: present
   vars:
@@ -29,7 +29,7 @@
 
 - name: Enable EPEL Repository on CentOS 8
   become: true
-  dnf:
+  ansible.builtin.dnf:
     name: epel-release
     state: latest
   when: ansible_facts['os_family'] == 'RedHat' and ansible_facts ['distribution_major_version'] == '8'
@@ -37,7 +37,7 @@
 
 - name: Installing dependencies
   become: true
-  yum:
+  ansible.builtin.yum:
     name: "{{ packages }}"
     state: present
   vars:
@@ -56,7 +56,7 @@
 
 - name: Installing CentOS 7 sepecific packages
   become: true
-  yum:
+  ansible.builtin.yum:
     name: "{{ packages }}"
     state: present
   vars:
@@ -70,7 +70,7 @@
 
 - name: Installing CentOS 8 sepecific packages
   become: true
-  yum:
+  ansible.builtin.yum:
     name: "{{ packages }}"
     state: present
   vars:

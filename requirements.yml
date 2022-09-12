@@ -3,5 +3,5 @@
   name: dataiku-api-client-python
   version: release/8.0
 - src: git+https://github.com/dataiku/dataiku-ansible-modules
-  name: dataiku-ansible-modules
+  name: dataiku.dataiku-ansible-modules
   version: master
