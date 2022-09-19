@@ -79,14 +79,48 @@ Example Playbook
 
 ```
 ---
-- name: Converge
+- name: Deploy
   hosts: all
   tasks:
     - name: "Include datarsense.dataikudss"
-      include_role:
-        name: {{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}
+      ansible.builtin.include_role:
+        name: "datarsense.dataikudss"
       vars:
+        dss_base_repository_url: https://cdn.downloads.dataiku.com/public/studio
+        dataiku_python_api_package: "git+https://github.com/dataiku/dataiku-api-client-python@release/5.1#egg=dataiku-api-client"
         dss_version: "10.0.7"
+        dss_api_version: "5.1"
+        dss_service_user: dataiku
+        dss_service_user_shell: "/bin/bash"
+        dss_service_user_home_basedir: /home
+        dss_install_dir_location: /opt/dataiku
+        dss_node_poll_fqdn: true # If true, use ansible_fqdn else use ansible_host
+        dss_license_file: license.json
+        type: design
+        datadir: dss_data
+        port: 10000
+
+        # Optional : add dss spark support
+        configure_spark: "true"
+        dss_hadoop_package: "dataiku-dss-hadoop-standalone-libs-generic-hadoop3-10.0.7.tar.gz"
+        dss_spark_package: "dataiku-dss-spark-standalone-10.0.7-3.1.2-generic-hadoop3.tar.gz"
+
+        # Optional : add LDAP login capability
+        configure_ldap_settings: "false"
+        ldap_url: "ldap://ldap.internal.example.com/dc=example,dc=com"
+        ldap_binddn: "uid=readonly,ou=users,dc=example,dc=com"
+        ldap_bindpassword: ""
+        ldap_usetls: true
+        ldap_autoimportusers: true
+        ldap_userfilter: "(&(objectClass=posixAccount)(uid={USERNAME}))"
+        ldap_defaultuserprofile: "READER"
+        ldap_displaynameattribute: "cn"
+        ldap_emailattribute: "mail"
+        ldap_enablegroups: true
+        ldap_groupfilter: "(&(objectClass=posixGroup)(memberUid={USERDN}))"
+        ldap_groupnameattribute: "cn"
+        ldap_groupprofiles: []
+        ldap_authorizedgroups: "dss-users"
 ```
 
 License
