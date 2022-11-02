@@ -28,9 +28,11 @@ platforms:
       container: docker
 provisioner:
   name: ansible
+  log: true
   env:
     ansible_python_interpreter: "/usr/bin/python3"
 verifier:
   name: ansible
+  log: true
   env:
     ansible_python_interpreter: "/usr/bin/python3"
