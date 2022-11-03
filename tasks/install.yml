@@ -36,12 +36,41 @@
     #state: forcereinstall # Useful when release/5.1 gets updated
   tags: [setup, dss-setup, dss-api]
 
-- name: Run the Dataiku DSS installer
+- name: Install DSS
   become: true
   become_user: "{{ dss_service_user }}"
   ansible.builtin.command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/installer.sh -d {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }} -p {{ port }} -t {{ type }}"
   args:
     creates: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/dss-version.json"
+  tags: [dss]
+
+- name: Read dss-version.json file
+  shell: cat {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/dss-version.json
+  register: dss_version_jsonfile
+  tags: [dss]
+
+- name: Set current dss version fact
+  set_fact:
+    current_dss_version: "{{ dss_version_jsonfile.stdout |  from_json | json_query('product_version') }}"
+  tags: [dss]
+
+- name: Compare currently installed DSS version with target DSS version and upgrade DSS if needed
+  block:
+    - name: "Upgrade message" 
+      debug:
+        msg: "DSS UPGRADE REQUIRED"
+    
+    - name: Stop the studios
+      become: true
+      ansible.builtin.service:
+        name: "dataiku.{{ datadir }}"
+        state: stopped
+
+    - name: Run the Dataiku DSS installer to upgrade the DSS instance
+      become: true
+      become_user: "{{ dss_service_user }}"
+      ansible.builtin.command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/installer.sh -u -d {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}"
+  when: current_dss_version is version(dss_version,  operator='lt', strict=True)
   tags: [dss]
 
 - name: Copy license file
@@ -70,7 +99,7 @@
     mode: '644'
   tags: [setup, dss-setup]
 
-- name: Install standalone Hadoop support
+- name: Install or upgrade standalone Hadoop support
   when: configure_spark|bool
   become: true
   become_user: "{{ dss_service_user }}"
@@ -89,7 +118,7 @@
     mode: '644'
   tags: [setup, dss-setup]
 
-- name: Install standalone Spark support
+- name: Install or upgrade standalone Spark support
   when: configure_spark|bool
   become: true
   become_user: "{{ dss_service_user }}"
