@@ -1,5 +1,11 @@
 ---
+# Check variables consistency before running tasks
+- name: Check packages version consistency
+  ansible.builtin.fail:
+    msg: Hadoop or Spark package version does not match DSS version {{ dss_version }}
+  when: configure_spark|bool and dss_version in dss_hadoop_package and dss_version in dss_spark_package
 
+# Run role tasks
 - import_tasks: pre_install.yml
 - import_tasks: install.yml
 - import_tasks: upgrade.yml
