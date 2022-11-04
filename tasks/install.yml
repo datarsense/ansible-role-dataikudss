@@ -47,11 +47,13 @@
 - name: Read dss-version.json file
   shell: cat {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/dss-version.json
   register: dss_version_jsonfile
+  changed_when: false
   tags: [dss]
 
 - name: Set current dss version fact
   set_fact:
     current_dss_version: "{{ dss_version_jsonfile.stdout |  from_json | json_query('product_version') }}"
+  changed_when: false
   tags: [dss]
 
 - name: Compare currently installed DSS version with target DSS version and upgrade DSS if needed
