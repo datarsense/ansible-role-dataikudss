@@ -69,7 +69,7 @@
     - name: Run the Dataiku DSS installer to upgrade the DSS instance
       become: true
       become_user: "{{ dss_service_user }}"
-      ansible.builtin.command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/installer.sh -u _y -d {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}"
+      ansible.builtin.command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/installer.sh -u -y -d {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}"
   when: current_dss_version is version(dss_version,  operator='lt', strict=True)
   tags: [dss]
 
