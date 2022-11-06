@@ -1,2 +1,32 @@
 ---
 # handlers file for ansible-role-dss
+
+- name: Download Hadoop package
+  become: true
+  become_user: "{{ dss_service_user }}"
+  ansible.builtin.get_url:
+    url: "{{ dss_base_repository_url }}/{{ dss_version }}/{{ dss_hadoop_package }}"
+    dest: "{{ dss_install_dir_location }}/{{ dss_hadoop_package }}"
+    mode: '644'
+  tags: [setup, dss-setup]
+
+- name: Install or upgrade standalone Hadoop support
+  become: true
+  become_user: "{{ dss_service_user }}"
+  ansible.builtin.command: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/bin/dssadmin install-hadoop-integration -standaloneArchive {{ dss_install_dir_location }}/{{ dss_hadoop_package }}"
+  tags: [dss]
+
+- name: Download Spark package
+  become: true
+  become_user: "{{ dss_service_user }}"
+  ansible.builtin.get_url:
+    url: "{{ dss_base_repository_url }}/{{ dss_version }}/{{ dss_spark_package }}"
+    dest: "{{ dss_install_dir_location }}/{{ dss_spark_package }}"
+    mode: '644'
+  tags: [setup, dss-setup]
+
+- name: Install or upgrade standalone Spark support
+  become: true
+  become_user: "{{ dss_service_user }}"
+  ansible.builtin.command: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/bin/dssadmin install-spark-integration -standaloneArchive {{ dss_install_dir_location }}/{{ dss_spark_package }}"
+  tags: [dss]
