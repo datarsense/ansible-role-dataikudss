@@ -2,8 +2,15 @@
 name: Molecule Test
 on: [push, pull_request]
 jobs:
-  build:
+  test:
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        platform: [ 'molecule-debian10', 'molecule-centos7', 'molecule-centos8' ]
+        # When set to true, GitHub cancels all in-progress jobs if any matrix job fails.
+        fail-fast: true
+        # The maximum number of jobs that can run simultaneously
+        max-parallel: 1
     steps:
       - uses: actions/checkout@v2
       - name: Install dependencies
@@ -18,4 +25,4 @@ jobs:
       - name: Test with molecule
         run: |
           ansible-galaxy install -r requirements.yml
-          molecule test
+          molecule test --platform-name={{ matrix.platform }} --destroy=always
