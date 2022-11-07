@@ -7,10 +7,10 @@ jobs:
     strategy:
       matrix:
         platform: [ 'molecule-debian10', 'molecule-centos7', 'molecule-centos8' ]
-        # When set to true, GitHub cancels all in-progress jobs if any matrix job fails.
-        fail-fast: true
-        # The maximum number of jobs that can run simultaneously
-        max-parallel: 1
+      # When set to true, GitHub cancels all in-progress jobs if any matrix job fails.
+      fail-fast: true
+      # The maximum number of jobs that can run simultaneously
+      max-parallel: 1
     steps:
       - uses: actions/checkout@v2
       - name: Install dependencies
