@@ -2,6 +2,20 @@
 name: Molecule Test
 on: [push, pull_request]
 jobs:
+  lint:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip setuptools
+          python3 -m pip install --upgrade ansible==5.9.0 yamllint ansible-lint
+      - name: Yamllint
+        run: |
+          yamllint tasks/*.yml
+      - name: Ansible Lint
+        run: |
+          ansible-lint
   test:
     runs-on: ubuntu-20.04
     strategy:

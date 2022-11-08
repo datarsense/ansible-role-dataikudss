@@ -47,7 +47,7 @@
       register: dss_install
 
     - name: Notify spark install/update handler
-      assert: { that: true, quiet: true }
+      ansible.builtin.assert: { that: true, quiet: true }
       changed_when: dss_install.changed and configure_spark|bool
       notify:
         - Download Hadoop package
@@ -58,13 +58,13 @@
   tags: [dss]
 
 - name: Read dss-version.json file
-  shell: cat {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/dss-version.json
+  ansible.builtin.command: cat {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/dss-version.json
   register: dss_version_jsonfile
   changed_when: false
   tags: [dss]
 
 - name: Set current dss version fact
-  set_fact:
+  ansible.builtin.set_fact:
     current_dss_version: "{{ dss_version_jsonfile.stdout |  from_json | json_query('product_version') }}"
   changed_when: false
   tags: [dss]
@@ -72,7 +72,7 @@
 - name: Compare currently installed DSS version with target DSS version and upgrade DSS if needed
   block:
     - name: "Upgrade message" 
-      debug:
+      ansible.builtin.debug:
         msg: "DSS UPGRADE REQUIRED"
     
     - name: Stop the studios
@@ -87,7 +87,7 @@
       ansible.builtin.command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/installer.sh -u -y -d {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}"
 
     - name: Notify spark install/update handler
-      assert: { that: true, quiet: true }
+      ansible.builtin.assert: { that: true, quiet: true }
       changed_when: configure_spark|bool
       notify:
         - Download Hadoop package
@@ -98,7 +98,7 @@
   tags: [dss]
 
 - name: Flush handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Copy license file
   become: true
