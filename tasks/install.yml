@@ -64,7 +64,7 @@
 
 - name: Set current dss version fact
   ansible.builtin.set_fact:
-    current_dss_version: "{{ dss_version_jsonfile.stdout |  from_json | json_query('product_version') }}"
+    current_dss_version: "{{ dss_version_jsonfile.stdout | from_json | json_query('product_version') }}"
   changed_when: false
   tags: [dss]
 
@@ -86,6 +86,7 @@
       become: true
       become_user: "{{ dss_service_user }}"
       ansible.builtin.command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/installer.sh -u -y -d {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}"
+      when: current_dss_version is version(dss_version,  operator='lt', strict=True)
 
     - name: Notify spark install/update handler
       ansible.builtin.assert: { that: true, quiet: true }
