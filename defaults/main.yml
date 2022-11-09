@@ -14,9 +14,9 @@ dss_service_user_home_basedir: /home
 dss_install_dir_location: /opt/dataiku
 dss_node_poll_fqdn: true # If true, use ansible_fqdn else use ansible_host
 dss_license_file: license.json
-type: design
-datadir: dss_data
-port: 10000
+dss_node_type: design
+dss_datadir: dss_data
+dss_network_port: 10000
 
 # Optional : add dss spark support
 configure_spark: "true"

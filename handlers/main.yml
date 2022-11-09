@@ -13,7 +13,7 @@
 - name: Install or upgrade standalone Hadoop support
   become: true
   become_user: "{{ dss_service_user }}"
-  ansible.builtin.command: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/bin/dssadmin install-hadoop-integration -standaloneArchive {{ dss_install_dir_location }}/{{ dss_hadoop_package }}"
+  ansible.builtin.command: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/bin/dssadmin install-hadoop-integration -standaloneArchive {{ dss_install_dir_location }}/{{ dss_hadoop_package }}"
   tags: [dss]
 
 - name: Download Spark package
@@ -28,5 +28,5 @@
 - name: Install or upgrade standalone Spark support
   become: true
   become_user: "{{ dss_service_user }}"
-  ansible.builtin.command: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/bin/dssadmin install-spark-integration -standaloneArchive {{ dss_install_dir_location }}/{{ dss_spark_package }}"
+  ansible.builtin.command: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/bin/dssadmin install-spark-integration -standaloneArchive {{ dss_install_dir_location }}/{{ dss_spark_package }}"
   tags: [dss]

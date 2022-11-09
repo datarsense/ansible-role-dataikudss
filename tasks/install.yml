@@ -42,9 +42,9 @@
     - name: Run the Dataiku DSS installer to install DSS for the first time
       become: true
       become_user: "{{ dss_service_user }}"
-      ansible.builtin.command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/installer.sh -d {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }} -p {{ port }} -t {{ type }}"
+      ansible.builtin.command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/installer.sh -d {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }} -p {{ dss_network_port }} -t {{ dss_node_type }}"
       args:
-        creates: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/dss-version.json"
+        creates: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/dss-version.json"
       register: dss_install
 
     - name: Notify spark install/update handler
@@ -57,7 +57,7 @@
         - Install or upgrade standalone Spark support
 
 - name: Read dss-version.json file
-  ansible.builtin.command: cat {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/dss-version.json
+  ansible.builtin.command: cat {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/dss-version.json
   register: dss_version_jsonfile
   changed_when: false
   tags: [dss]
@@ -79,13 +79,13 @@
     - name: Stop the studios
       become: true
       ansible.builtin.service:
-        name: "dataiku.{{ datadir }}"
+        name: "dataiku.{{ dss_datadir }}"
         state: stopped
 
     - name: Run the Dataiku DSS installer to upgrade the DSS instance
       become: true
       become_user: "{{ dss_service_user }}"
-      ansible.builtin.command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/installer.sh -u -y -d {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}"
+      ansible.builtin.command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/installer.sh -u -y -d {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}"
       when: current_dss_version is version(dss_version,  operator='lt', strict=True)
 
     - name: Notify spark install/update handler
@@ -105,21 +105,21 @@
   become_user: "{{ dss_service_user }}"
   ansible.builtin.copy:
     src: "{{ dss_license_file }}"
-    dest: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/config/license.json"
+    dest: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/config/license.json"
     mode: '644'
   tags: [dss]
 
 - name: Install boot service
   become: true
-  ansible.builtin.command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/scripts/install/install-boot.sh -n {{ datadir }} {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }} dataiku"
+  ansible.builtin.command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/scripts/install/install-boot.sh -n {{ dss_datadir }} {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }} dataiku"
   args:
-    creates: "/etc/init.d/dataiku.{{ datadir }}"
+    creates: "/etc/init.d/dataiku.{{ dss_datadir }}"
   tags: [dss]
 
 - name: Start the studios
   become: true
   ansible.builtin.service:
-    name: "dataiku.{{ datadir }}"
+    name: "dataiku.{{ dss_datadir }}"
     state: started
     enabled: true
   tags: [dss]
