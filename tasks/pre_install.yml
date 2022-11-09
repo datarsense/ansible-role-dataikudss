@@ -4,11 +4,11 @@
     dss_node_hostname: "{{ ansible_fqdn if dss_node_poll_fqdn else ansible_host }}"
   tags: [setup, dss-setup, dss]
 
-- name : Debian-like distributions specific preinstall tasks
+- name: Debian-like distributions specific preinstall tasks
   ansible.builtin.import_tasks: pre_install/debian.yml
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
-- name : Centos specific preinstall tasks
+- name: Centos specific preinstall tasks
   ansible.builtin.import_tasks: pre_install/centos.yml
   when: ansible_distribution == 'CentOS'
 
