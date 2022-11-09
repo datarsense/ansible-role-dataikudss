@@ -36,13 +36,69 @@
     #state: forcereinstall # Useful when release/5.1 gets updated
   tags: [setup, dss-setup, dss-api]
 
-- name: Run the Dataiku DSS installer
-  become: true
-  become_user: "{{ dss_service_user }}"
-  ansible.builtin.command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/installer.sh -d {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }} -p {{ port }} -t {{ type }}"
-  args:
-    creates: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/dss-version.json"
+- name: Install DSS
   tags: [dss]
+  block:
+    - name: Run the Dataiku DSS installer to install DSS for the first time
+      become: true
+      become_user: "{{ dss_service_user }}"
+      ansible.builtin.command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/installer.sh -d {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }} -p {{ port }} -t {{ type }}"
+      args:
+        creates: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/dss-version.json"
+      register: dss_install
+
+    - name: Notify spark install/update handler
+      ansible.builtin.assert: { that: true, quiet: true }
+      changed_when: dss_install.changed and configure_spark|bool
+      notify:
+        - Download Hadoop package
+        - Install or upgrade standalone Hadoop support
+        - Download Spark package
+        - Install or upgrade standalone Spark support
+
+- name: Read dss-version.json file
+  ansible.builtin.command: cat {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/dss-version.json
+  register: dss_version_jsonfile
+  changed_when: false
+  tags: [dss]
+
+- name: Set current dss version fact
+  ansible.builtin.set_fact:
+    current_dss_version: "{{ dss_version_jsonfile.stdout | from_json | json_query('product_version') }}"
+  changed_when: false
+  tags: [dss]
+
+- name: Compare currently installed DSS version with target DSS version and upgrade DSS if needed
+  when: current_dss_version is version(dss_version,  operator='lt', strict=True)
+  tags: [dss]
+  block:
+    - name: "Upgrade message" 
+      ansible.builtin.debug:
+        msg: "DSS UPGRADE REQUIRED"
+    
+    - name: Stop the studios
+      become: true
+      ansible.builtin.service:
+        name: "dataiku.{{ datadir }}"
+        state: stopped
+
+    - name: Run the Dataiku DSS installer to upgrade the DSS instance
+      become: true
+      become_user: "{{ dss_service_user }}"
+      ansible.builtin.command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/installer.sh -u -y -d {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}"
+      when: current_dss_version is version(dss_version,  operator='lt', strict=True)
+
+    - name: Notify spark install/update handler
+      ansible.builtin.assert: { that: true, quiet: true }
+      changed_when: configure_spark|bool
+      notify:
+        - Download Hadoop package
+        - Install or upgrade standalone Hadoop support
+        - Download Spark package
+        - Install or upgrade standalone Spark support
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Copy license file
   become: true
@@ -58,44 +114,6 @@
   ansible.builtin.command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/scripts/install/install-boot.sh -n {{ datadir }} {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }} dataiku"
   args:
     creates: "/etc/init.d/dataiku.{{ datadir }}"
-  tags: [dss]
-
-- name: Download Hadoop package
-  when: configure_spark|bool
-  become: true
-  become_user: "{{ dss_service_user }}"
-  ansible.builtin.get_url:
-    url: "{{ dss_base_repository_url }}/{{ dss_version }}/{{ dss_hadoop_package }}"
-    dest: "{{ dss_install_dir_location }}/{{ dss_hadoop_package }}"
-    mode: '644'
-  tags: [setup, dss-setup]
-
-- name: Install standalone Hadoop support
-  when: configure_spark|bool
-  become: true
-  become_user: "{{ dss_service_user }}"
-  ansible.builtin.command: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/bin/dssadmin install-hadoop-integration -standaloneArchive {{ dss_install_dir_location }}/{{ dss_hadoop_package }}"
-  args:
-    creates: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/bin/env-hadoop.sh"
-  tags: [dss]
-
-- name: Download Spark package
-  when: configure_spark|bool
-  become: true
-  become_user: "{{ dss_service_user }}"
-  ansible.builtin.get_url:
-    url: "{{ dss_base_repository_url }}/{{ dss_version }}/{{ dss_spark_package }}"
-    dest: "{{ dss_install_dir_location }}/{{ dss_spark_package }}"
-    mode: '644'
-  tags: [setup, dss-setup]
-
-- name: Install standalone Spark support
-  when: configure_spark|bool
-  become: true
-  become_user: "{{ dss_service_user }}"
-  ansible.builtin.command: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/bin/dssadmin install-spark-integration -standaloneArchive {{ dss_install_dir_location }}/{{ dss_spark_package }}"
-  args:
-    creates: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}/bin/env-spark.sh"
   tags: [dss]
 
 - name: Start the studios
