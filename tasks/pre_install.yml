@@ -4,10 +4,12 @@
     dss_node_hostname: "{{ ansible_fqdn if dss_node_poll_fqdn else ansible_host }}"
   tags: [setup, dss-setup, dss]
 
-- import_tasks: pre_install/debian.yml
+- name: Debian-like distributions specific preinstall tasks
+  ansible.builtin.import_tasks: pre_install/debian.yml
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
-- import_tasks: pre_install/centos.yml
+- name: Centos specific preinstall tasks
+  ansible.builtin.import_tasks: pre_install/centos.yml
   when: ansible_distribution == 'CentOS'
 
 - name: Disable SELinux
@@ -20,7 +22,7 @@
 
 - name: Increase system limits as required by DSS
   become: true
-  pam_limits:
+  community.general.pam_limits:
     domain: "{{ dss_service_user }}"
     limit_item: "{{ item }}"
     limit_type: "-"
@@ -60,7 +62,7 @@
 - name: Create dss data directory
   become: true
   ansible.builtin.file:
-    path: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ datadir }}"
+    path: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}"
     state: directory
     owner: "{{ dss_service_user }}"
     mode: "u=rwx,g=,o="

@@ -6,6 +6,11 @@
   when: (configure_spark|bool) and (dss_hadoop_package is not search(dss_version) or dss_spark_package is not search(dss_version))
 
 # Run role tasks
-- import_tasks: pre_install.yml
-- import_tasks: install.yml
-- import_tasks: config.yml
+- name: PREPARE SERVER BEFORE DSS INSTALL
+  ansible.builtin.import_tasks: pre_install.yml
+
+- name: INSTALL or UPGRADE DSS
+  ansible.builtin.import_tasks: install.yml
+
+- name: CONGIGURE DSS
+  ansible.builtin.import_tasks: config.yml

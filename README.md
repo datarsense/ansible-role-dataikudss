@@ -32,9 +32,9 @@ Role Variables
 |dss_install_dir_location| /opt/dataiku | Directory in which Dataiku binaries are downloaded and installed |
 |dss_node_poll_fqdn| true | If true, use ansible_fqdn else use ansible_host |
 |dss_license_file| license.json | The DSS license file which has to be deployed on the DSS host. |
-|type | design | DSS node type. The only supported value in this release is `design`|
-|datadir | dss_data | Name of the DSS data directory|
-|port | 10000 | DSS network port |
+|dss_node_type | design | DSS node type. The only supported value in this release is `design`|
+|dss_datadir | dss_data | Name of the DSS data directory|
+|dss_network_port | 10000 | DSS network port |
 
 ### Optional variables for enabling Spark support
 | Variable | Default value |
@@ -96,9 +96,9 @@ Example Playbook
         dss_install_dir_location: /opt/dataiku
         dss_node_poll_fqdn: true # If true, use ansible_fqdn else use ansible_host
         dss_license_file: license.json
-        type: design
-        datadir: dss_data
-        port: 10000
+        dss_node_type: design
+        dss_datadir: dss_data
+        dss_network_port: 10000
 
         # Optional : add dss spark support
         configure_spark: "true"
