@@ -39,3 +39,7 @@ ldap_groupfilter: "(&(objectClass=posixGroup)(memberUid={USERDN}))"
 ldap_groupnameattribute: "cn"
 ldap_groupprofiles: []
 ldap_authorizedgroups: "dss-users"
+
+# Optional : add containerized execution on kubernetes capability
+configure_k8s: false
+k8s_executionconfigs: []

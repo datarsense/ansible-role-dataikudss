@@ -32,3 +32,12 @@
         authorizedGroups: "{{ ldap_authorizedgroups }}"
   ignore_errors: yes
   tags: [dss-config]
+
+- name: Configure K8S settings
+  when: configure_k8s
+  dss_general_settings:
+    connect_to: "{{ dss_connection_info }}"
+    settings:
+      containerSettings:
+        executionConfigs: "{{ k8s_executionconfigs }}"
+  tags: [dss-config]
