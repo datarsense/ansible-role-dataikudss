@@ -39,7 +39,7 @@ Role Variables
 ### Optional variables for enabling Spark support
 | Variable | Default value |
 |----------|-------------|
-|configure_spark| "true" |
+|configure_spark| true |
 |dss_hadoop_package|"dataiku-dss-hadoop-standalone-libs-generic-hadoop3-10.0.7.tar.gz"|
 |dss_spark_package| "dataiku-dss-spark-standalone-10.0.7-3.1.2-generic-hadoop3.tar.gz"|
 
@@ -171,7 +171,7 @@ Sample DSS deployment playbook
         dss_network_port: 10000
 
         # Optional : add dss spark support
-        configure_spark: "true"
+        configure_spark: true
         dss_hadoop_package: "dataiku-dss-hadoop-standalone-libs-generic-hadoop3-10.0.7.tar.gz"
         dss_spark_package: "dataiku-dss-spark-standalone-10.0.7-3.1.2-generic-hadoop3.tar.gz"
 
