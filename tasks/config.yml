@@ -31,7 +31,7 @@
         groupProfiles: "{{ ldap_groupprofiles }}"
         authorizedGroups: "{{ ldap_authorizedgroups }}"
   ignore_errors: yes
-  tags: [dss-config]
+  tags: [dss-config, molecule-idempotence-notest]
 
 - name: Configure K8S settings
   when: configure_k8s
@@ -40,4 +40,4 @@
     settings:
       containerSettings:
         executionConfigs: "{{ k8s_executionconfigs }}"
-  tags: [dss-config]
+  tags: [dss-config, molecule-idempotence-notest]
