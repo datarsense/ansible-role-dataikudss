@@ -36,32 +36,6 @@ Role Variables
 |dss_datadir | dss_data | Name of the DSS data directory|
 |dss_network_port | 10000 | DSS network port |
 
-### Optional variables for enabling Spark support
-| Variable | Default value |
-|----------|-------------|
-|configure_spark| true |
-|dss_hadoop_package|"dataiku-dss-hadoop-standalone-libs-generic-hadoop3-10.0.7.tar.gz"|
-|dss_spark_package| "dataiku-dss-spark-standalone-10.0.7-3.1.2-generic-hadoop3.tar.gz"|
-
-### Optional variables for enabling LDAP authentication
-| Variable | Default value |
-|----------|-------------|
-|configure_ldap_settings:| "false" |
-|ldap_url| "ldap://ldap.internal.example.com/dc=example,dc=com"|
-|ldap_binddn| "uid=readonly,ou=users,dc=example,dc=com"
-|ldap_bindpassword: "" |
-|ldap_usetls| true |
-|ldap_autoimportusers| true |
-|ldap_userfilter| "(&(objectClass=posixAccount)(uid={USERNAME}))" |
-|ldap_defaultuserprofile|"READER"|
-|ldap_displaynameattribute| "cn"|
-|ldap_emailattribute| "mail"|
-|ldap_enablegroups| true |
-|ldap_groupfilter| "(&(objectClass=posixGroup)(memberUid={USERDN}))"|
-|ldap_groupnameattribute| "cn" |
-|ldap_groupprofiles| [] |
-|ldap_authorizedgroups| "dss-users" |
-
 ### Optional variables for enabling containerized execution on kubernetes
 | Variable | Default value |
 |----------|-------------|
@@ -70,7 +44,7 @@ Role Variables
 
 The **k8s_executionconfigs** is an array which **can contain multiple containerized execution configurations** to match different business scenarios. Different kubernetes quotas can be allowed depending on user permissions, cuda ressources access can be limited to the data-scientist group, several base image can be offered to match business needs, ... 
 
-A configuration example is provided below with **two kubernetes execution configs** :
+A configuration example is provided below with **two kubernetes execution configs**. Please make sure to replace sample **repositoryURL**, **baseImage**, and set a valid kubernetes namespace when using this sample.
 ```
  - name: "Deploy DSS with containerized execution support"
       ansible.builtin.include_role:
@@ -132,6 +106,57 @@ A configuration example is provided below with **two kubernetes execution config
             dockerTLSVerify: false
 ```
 
+### Optional variables for enabling Spark support
+| Variable | Default value |
+|----------|-------------|
+|configure_spark| true |
+|dss_hadoop_package|"dataiku-dss-hadoop-standalone-libs-generic-hadoop3-10.0.7.tar.gz"|
+|dss_spark_package| "dataiku-dss-spark-standalone-10.0.7-3.1.2-generic-hadoop3.tar.gz"|
+|spark_executionconfigs| [] |
+
+The **spark_executionconfigs** is an array which **can contain multiple spark execution configurations** to match different business scenario when managing a spark cluster on kubernetes from DSS. 
+
+This variable is used to configure spark settings for **spark on kubernetes** when both **configure_spark** and **configure_k8s** are **true***. Other spark deployment scenarios are not supported in this ansible role.
+
+A configuration example is provided below. Please make sure to replace sample **repositoryURL**, **baseImage**, and set a valid kubernetes namespace when using this sample. The **authenticationMode** can be either `BUILTIN` or `DYNAMIC_SERVICE_ACCOUNT` : set this variable according with your user isolation needs. Read more on [
+Workload isolation on Kubernetes](https://doc.dataiku.com/dss/latest/user-isolation/capabilities/kubernetes.html) dataiku documentation.
+```
+spark_executionconfigs:
+  - name": SparkOnKubernetes
+    kubernetesSettings:
+      managedKubernetes: true
+      managedNamespace: testnamespace
+      authenticationMode: BUILTIN
+      ensureNamespaceCompliance: false
+      createNamespace: false
+      baseImageType: SPARK
+      baseImage: dss_spark_base:latest
+      repositoryURL: docker.io
+      prePushMode: NONE
+      dockerTLSVerify: false
+```
+
+
+### Optional variables for enabling LDAP authentication
+| Variable | Default value |
+|----------|-------------|
+|configure_ldap_settings:| "false" |
+|ldap_url| "ldap://ldap.internal.example.com/dc=example,dc=com"|
+|ldap_binddn| "uid=readonly,ou=users,dc=example,dc=com"
+|ldap_bindpassword: "" |
+|ldap_usetls| true |
+|ldap_autoimportusers| true |
+|ldap_userfilter| "(&(objectClass=posixAccount)(uid={USERNAME}))" |
+|ldap_defaultuserprofile|"READER"|
+|ldap_displaynameattribute| "cn"|
+|ldap_emailattribute| "mail"|
+|ldap_enablegroups| true |
+|ldap_groupfilter| "(&(objectClass=posixGroup)(memberUid={USERDN}))"|
+|ldap_groupnameattribute| "cn" |
+|ldap_groupprofiles| [] |
+|ldap_authorizedgroups| "dss-users" |
+
+
 Dependencies
 ------------
 The following modules provided by dataiku are required for DSS config automation :
@@ -174,6 +199,19 @@ Sample DSS deployment playbook
         configure_spark: true
         dss_hadoop_package: "dataiku-dss-hadoop-standalone-libs-generic-hadoop3-10.0.7.tar.gz"
         dss_spark_package: "dataiku-dss-spark-standalone-10.0.7-3.1.2-generic-hadoop3.tar.gz"
+        spark_executionconfigs:
+          - name": SparkOnKubernetes
+            kubernetesSettings:
+              managedKubernetes: true
+              managedNamespace: testnamespace
+              authenticationMode: BUILTIN
+              ensureNamespaceCompliance: false
+              createNamespace: false
+              baseImageType: SPARK
+              baseImage: dss_spark_base:latest
+              repositoryURL: docker.io
+              prePushMode: NONE
+              dockerTLSVerify: false
 
         # Optional : add LDAP login capability
         configure_ldap_settings: "false"

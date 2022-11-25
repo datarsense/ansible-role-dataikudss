@@ -18,10 +18,15 @@ dss_node_type: design
 dss_datadir: dss_data
 dss_network_port: 10000
 
+# Optional : add containerized execution on kubernetes capability
+configure_k8s: false
+k8s_executionconfigs: []
+
 # Optional : add dss spark support
 configure_spark: true
 dss_hadoop_package: "dataiku-dss-hadoop-standalone-libs-generic-hadoop3-10.0.7.tar.gz"
 dss_spark_package: "dataiku-dss-spark-standalone-10.0.7-3.1.2-generic-hadoop3.tar.gz"
+spark_executionconfigs: []
 
 # Optional : add LDAP login capability
 configure_ldap_settings: "false"
@@ -39,7 +44,3 @@ ldap_groupfilter: "(&(objectClass=posixGroup)(memberUid={USERDN}))"
 ldap_groupnameattribute: "cn"
 ldap_groupprofiles: []
 ldap_authorizedgroups: "dss-users"
-
-# Optional : add containerized execution on kubernetes capability
-configure_k8s: false
-k8s_executionconfigs: []
