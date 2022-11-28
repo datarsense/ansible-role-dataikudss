@@ -3,7 +3,7 @@
 - name: Check packages version consistency
   ansible.builtin.fail:
     msg: Hadoop or Spark package version does not match DSS version {{ dss_version }}
-  when: (configure_spark|bool) and (dss_hadoop_package is not search(dss_version) or dss_spark_package is not search(dss_version))
+  when: (configure_spark) and (dss_hadoop_package is not search(dss_version) or dss_spark_package is not search(dss_version))
 
 # Run role tasks
 - name: PREPARE SERVER BEFORE DSS INSTALL

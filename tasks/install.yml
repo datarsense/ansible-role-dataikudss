@@ -49,7 +49,7 @@
 
     - name: Notify spark install/update handler
       ansible.builtin.assert: { that: true, quiet: true }
-      changed_when: dss_install.changed and configure_spark|bool
+      changed_when: dss_install.changed and configure_spark
       notify:
         - Download Hadoop package
         - Install or upgrade standalone Hadoop support
@@ -92,7 +92,7 @@
 
     - name: Notify spark install/update handler
       ansible.builtin.assert: { that: true, quiet: true }
-      changed_when: configure_spark|bool
+      changed_when: configure_spark
       notify:
         - Download Hadoop package
         - Install or upgrade standalone Hadoop support

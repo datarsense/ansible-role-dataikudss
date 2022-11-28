@@ -31,4 +31,31 @@
         groupProfiles: "{{ ldap_groupprofiles }}"
         authorizedGroups: "{{ ldap_authorizedgroups }}"
   ignore_errors: yes
-  tags: [dss-config]
+  tags: [dss-config, molecule-idempotence-notest]
+
+- name: Configure containerized execution on Kubernetes in DSS settings
+  when: configure_k8s
+  dss_general_settings:
+    connect_to: "{{ dss_connection_info }}"
+    settings:
+      containerSettings:
+        executionConfigs: "{{ k8s_executionconfigs }}"
+  tags: [dss-config, molecule-idempotence-notest]
+
+- name: Enable spark support in DSS settings
+  when: configure_spark
+  dss_general_settings:
+    connect_to: "{{ dss_connection_info }}"
+    settings:
+      sparkSettings:
+        sparkEnabled: true
+  tags: [dss-config, molecule-idempotence-notest]
+
+- name: Enable spark on kubernetes support in DSS settings when both spark and kubernetes are enabled
+  when: configure_spark and configure_k8s
+  dss_general_settings:
+    connect_to: "{{ dss_connection_info }}"
+    settings:
+      sparkSettings:
+        executionConfigs: "{{ spark_executionconfigs }}"
+  tags: [dss-config, molecule-idempotence-notest]
