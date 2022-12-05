@@ -51,6 +51,10 @@
             repositoryURL: docker.io
             prePushMode: NONE
             dockerTLSVerify: false
+        configure_uif: true
+        uif_allowed_user_groups:
+          - group1
+          - group2
     - name: "Test DSS upgrade"
       ansible.builtin.include_role:
         name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
@@ -100,3 +104,7 @@
             repositoryURL: docker.io
             prePushMode: NONE
             dockerTLSVerify: false
+        configure_uif: true
+        uif_allowed_user_groups:
+          - group1
+          - group2

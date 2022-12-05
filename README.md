@@ -157,6 +157,21 @@ spark_executionconfigs:
 |ldap_authorizedgroups| "dss-users" |
 
 
+### Optional variables for enabling User Isolation Framework (UIF)
+| Variable | Default value |
+|----------|-------------|
+|configure_uif| false |
+|uif_allowed_user_groups| [] |
+
+The **uif_allowed_user_groups** is an array which **contains local groups for which UIF impersonation is allowed**. You must fill it with  the **list of UNIX groups** to which your end users belong. Only users belonging to these groups will be allowed to use the local code impersonation mechanism (Python, R, visual ML, spark). More on https://knowledge.dataiku.com/latest/kb/governance/Which-activities-in-DSS-require-that-a-user-be-added-to-the.html
+
+```
+configure_uif: true
+uif_allowed_user_groups:
+  - group1
+  - group2
+```
+
 Dependencies
 ------------
 The following modules provided by dataiku are required for DSS config automation :
@@ -282,6 +297,10 @@ Sample DSS deployment playbook
             repositoryURL: docker.io
             prePushMode: NONE
             dockerTLSVerify: false
+        configure_uif: true
+        uif_allowed_user_groups:
+          - group1
+          - group2
 ```
 
 License

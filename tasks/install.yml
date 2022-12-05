@@ -56,6 +56,14 @@
         - Download Spark package
         - Install or upgrade standalone Spark support
 
+    - name: Notify UIF install/update handler
+      ansible.builtin.assert: { that: true, quiet: true }
+      changed_when: configure_uif
+      notify:
+        - Activate UIF
+        - Read dss install id
+        - Deploy UIF configuration file
+
 - name: Read dss-version.json file
   become: true
   become_user: "{{ dss_service_user }}"
@@ -99,7 +107,15 @@
         - Download Spark package
         - Install or upgrade standalone Spark support
 
-- name: Flush handlers
+    - name: Notify UIF install/update handler
+      ansible.builtin.assert: { that: true, quiet: true }
+      changed_when: configure_uif
+      notify:
+        - Activate UIF
+        - Read dss install id
+        - Deploy UIF configuration file
+
+- name: Flush handlers to install/upgrade optional features
   ansible.builtin.meta: flush_handlers
 
 - name: Copy license file
