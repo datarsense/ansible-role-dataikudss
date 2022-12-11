@@ -161,15 +161,17 @@ spark_executionconfigs:
 | Variable | Default value |
 |----------|-------------|
 |configure_uif| false |
-|uif_allowed_user_groups| [] |
+|uif_users| [] |
 
-The **uif_allowed_user_groups** is an array which **contains local groups for which UIF impersonation is allowed**. You must fill it with  the **list of UNIX groups** to which your end users belong. Only users belonging to these groups will be allowed to use the local code impersonation mechanism (Python, R, visual ML, spark). More on https://knowledge.dataiku.com/latest/kb/governance/Which-activities-in-DSS-require-that-a-user-be-added-to-the.html
+The **uif_users** is a list which **contains local unix users and groups for which UIF impersonation is allowed**. You must fill it with the **list of users which have to be created** by ansible and the **UNIX groups** to which they belong. Only users belonging to these groups will be allowed to use the local code impersonation mechanism (Python, R, visual ML, spark). More on https://knowledge.dataiku.com/latest/kb/governance/Which-activities-in-DSS-require-that-a-user-be-added-to-the.html
 
 ```
 configure_uif: true
-uif_allowed_user_groups:
-  - group1
-  - group2
+uif_users:
+  userA:
+    group: groupA
+  userB:
+    group: groupB
 ```
 
 Dependencies
@@ -298,9 +300,11 @@ Sample DSS deployment playbook
             prePushMode: NONE
             dockerTLSVerify: false
         configure_uif: true
-        uif_allowed_user_groups:
-          - group1
-          - group2
+        uif_users:
+          userA:
+            group: groupA
+          userB:
+            group: groupB
 ```
 
 License

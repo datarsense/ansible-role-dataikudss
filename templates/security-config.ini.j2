@@ -6,7 +6,7 @@
 #
 # This must double-check with the settings of the groups with
 # code-writing or Hadoop/Spark privileges in DSS
-allowed_user_groups = {{ uif_allowed_user_groups|join(';') }}
+allowed_user_groups = {% set semicolon = joiner(";") %}{% for user in uif_users -%}{{ semicolon() }}{{ uif_users[user].group }}{% endfor %}
 
 [dirs]
 # Absolute path to DSS data dir.
