@@ -41,6 +41,15 @@
     state: present
   tags: [setup, dss-setup]
 
+- name: Create UIF groups
+  become: true
+  when: configure_uif
+  ansible.builtin.group:
+    name: "{{ item.value.group }}"
+    state: present
+  loop: "{{ uif_users | dict2items }}"
+  tags: [setup, dss-setup]
+
 - name: Create UIF users
   become: true
   when: configure_uif
