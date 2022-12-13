@@ -59,3 +59,21 @@
       sparkSettings:
         executionConfigs: "{{ spark_executionconfigs }}"
   tags: [dss-config, molecule-idempotence-notest]
+
+- name: Configure UIF user mappings
+  when: configure_uif
+  dss_general_settings:
+    connect_to: "{{ dss_connection_info }}"
+    settings:
+      impersonation:
+        userRules: "{{ uif_userRules }}"
+  tags: [dss-config, molecule-idempotence-notest]
+
+- name: Configure UIF group mappings
+  when: configure_uif
+  dss_general_settings:
+    connect_to: "{{ dss_connection_info }}"
+    settings:
+      impersonation:
+        groupRules: "{{ uif_groupRules }}"
+  tags: [dss-config, molecule-idempotence-notest]

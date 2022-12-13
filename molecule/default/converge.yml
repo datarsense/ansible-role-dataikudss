@@ -1,6 +1,81 @@
 ---
 - name: Converge
   hosts: all
+  vars:
+    configure_ldap_settings: "true"
+    configure_spark: true
+    spark_executionconfigs:
+      - name": SparkOnKubernetes
+        kubernetesSettings:
+          managedKubernetes: true
+          managedNamespace: testnamespace
+          authenticationMode: BUILTIN
+          ensureNamespaceCompliance: false
+          createNamespace: false
+          baseImageType: SPARK
+          baseImage: dss_spark_base:latest
+          repositoryURL: docker.io
+          prePushMode: NONE
+          dockerTLSVerify: false
+    configure_k8s: true
+    k8s_executionconfigs:
+      - name: test1
+        type: KUBERNETES
+        properties: []
+        usableBy: ALLOWED
+        allowedGroups:
+          - administrators
+        dockerNetwork: host
+        dockerResources: []
+        kubernetesNamespace: testnamespace
+        kubernetesResources:
+          memRequestMB: 2048
+          memLimitMB: 2048
+          cpuRequest: 2.0
+          cpuLimit: 2.0
+          customLimits: []
+          customRequests: []
+        hostPathVolumes: []
+        isFinal: false,
+        ensureNamespaceCompliance: false
+        createNamespace: false
+        baseImageType: EXEC
+        baseImage: dss_containerer_exec_base:latest
+        repositoryURL: docker.io
+        prePushMode: NONE
+        dockerTLSVerify: false
+    configure_uif: true
+    uif_users:
+      userA:
+        group: groupA
+      userB:
+        group: groupB
+    uif_userRules:
+      - name: rule1
+        scope: GLOBAL
+        type: SINGLE_MAPPING
+        dssUser: userA
+        targetUnix: unix-userA
+        targetHadoop: hadoop-userA
+      - name: rule2
+        scope: GLOBAL
+        type: REGEXP_RULE
+        ruleFrom: .*
+        targetUnix: unix-userB
+        targetHadoop: hadoop-userB
+    uif_groupRules:
+      - name: ruleGroupA
+        scope: GLOBAL
+        type: SINGLE_MAPPING
+        dssGroup: groupA
+        targetUnix: unix-userA
+        targetHadoop: hadoop-userA
+      - name: ruleGroupB
+        scope: GLOBAL
+        type: REGEXP_RULE
+        ruleFrom: .*
+        targetUnix: unix-userB
+        targetHadoop: hadoop-userB
   tasks:
     - name: "Test DSS install"
       ansible.builtin.include_role:
@@ -9,54 +84,6 @@
         dss_version: "10.0.7"
         dss_hadoop_package: "dataiku-dss-hadoop-standalone-libs-generic-hadoop3-10.0.7.tar.gz"
         dss_spark_package: "dataiku-dss-spark-standalone-10.0.7-3.1.2-generic-hadoop3.tar.gz"
-        configure_ldap_settings: "true"
-        configure_spark: true
-        spark_executionconfigs:
-          - name": SparkOnKubernetes
-            kubernetesSettings:
-              managedKubernetes: true
-              managedNamespace: testnamespace
-              authenticationMode: BUILTIN
-              ensureNamespaceCompliance: false
-              createNamespace: false
-              baseImageType: SPARK
-              baseImage: dss_spark_base:latest
-              repositoryURL: docker.io
-              prePushMode: NONE
-              dockerTLSVerify: false
-        configure_k8s: true
-        k8s_executionconfigs:
-          - name: test1
-            type: KUBERNETES
-            properties: []
-            usableBy: ALLOWED
-            allowedGroups:
-              - administrators
-            dockerNetwork: host
-            dockerResources: []
-            kubernetesNamespace: testnamespace
-            kubernetesResources:
-              memRequestMB: 2048
-              memLimitMB: 2048
-              cpuRequest: 2.0
-              cpuLimit: 2.0
-              customLimits: []
-              customRequests: []
-            hostPathVolumes: []
-            isFinal: false,
-            ensureNamespaceCompliance: false
-            createNamespace: false
-            baseImageType: EXEC
-            baseImage: dss_containerer_exec_base:latest
-            repositoryURL: docker.io
-            prePushMode: NONE
-            dockerTLSVerify: false
-        configure_uif: true
-        uif_users:
-          userA:
-            group: groupA
-          userB:
-            group: groupB
     - name: "Test DSS upgrade"
       ansible.builtin.include_role:
         name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
@@ -64,51 +91,3 @@
         dss_version: "11.1.1"
         dss_hadoop_package: "dataiku-dss-hadoop-standalone-libs-generic-hadoop3-11.1.1.tar.gz"
         dss_spark_package: "dataiku-dss-spark-standalone-11.1.1-3.2.1-generic-hadoop3.tar.gz"
-        configure_ldap_settings: "true"
-        configure_spark: true
-        spark_executionconfigs:
-          - name": SparkOnKubernetes
-            kubernetesSettings:
-              managedKubernetes: true
-              managedNamespace: testnamespace
-              authenticationMode: BUILTIN
-              ensureNamespaceCompliance: false
-              createNamespace: false
-              baseImageType: SPARK
-              baseImage: dss_spark_base:latest
-              repositoryURL: docker.io
-              prePushMode: NONE
-              dockerTLSVerify: false
-        configure_k8s: true
-        k8s_executionconfigs:
-          - name: test1
-            type: KUBERNETES
-            properties: []
-            usableBy: ALLOWED
-            allowedGroups:
-              - administrators
-            dockerNetwork: host
-            dockerResources: []
-            kubernetesNamespace: testnamespace
-            kubernetesResources:
-              memRequestMB: 2048
-              memLimitMB: 2048
-              cpuRequest: 2.0
-              cpuLimit: 2.0
-              customLimits: []
-              customRequests: []
-            hostPathVolumes: []
-            isFinal: false,
-            ensureNamespaceCompliance: false
-            createNamespace: false
-            baseImageType: EXEC
-            baseImage: dss_containerer_exec_base:latest
-            repositoryURL: docker.io
-            prePushMode: NONE
-            dockerTLSVerify: false
-        configure_uif: true
-        uif_users:
-          userA:
-            group: groupA
-          userB:
-            group: groupB

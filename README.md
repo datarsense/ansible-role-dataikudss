@@ -162,8 +162,17 @@ spark_executionconfigs:
 |----------|-------------|
 |configure_uif| false |
 |uif_users| [] |
+|uif_userRules| [] |
+|uif_groupRules| [] |
 
 The **uif_users** is a list which **contains local unix users and groups for which UIF impersonation is allowed**. You must fill it with the **list of users which have to be created** by ansible and the **UNIX groups** to which they belong. Only users belonging to these groups will be allowed to use the local code impersonation mechanism (Python, R, visual ML, spark). More on https://knowledge.dataiku.com/latest/kb/governance/Which-activities-in-DSS-require-that-a-user-be-added-to-the.html
+
+The **uif_userRules** and **uif_groupRules** are arrays which can contain **multiple uif user mapping** configuring mapping between a DSS user and an unix or hadoop user effectively running the DSS job when user isolation is enabled. Read more on https://doc.dataiku.com/dss/latest/user-isolation/initial-setup.html
+
+UIF rules types can be :
+ - **IDENTITY** : Make the rule map each DSS user to a UNIX user of the same name.
+ - **SINGLE_MAPPING** :  Make the rule map a given DSS user/group configured in the **dssUser** or**dssGroup** variable to a given UNIX user defined in the **targetUnix** (or **targetHadoop**) variable.
+ - **REGEXP_RULE** : Make the rule map a DSS users matching a given regular expression configured in the **ruleFrom** variable to a given UNIX user defined in the **targetUnix** (or**targetHadoop**) variable.
 
 ```
 configure_uif: true
@@ -172,7 +181,37 @@ uif_users:
     group: groupA
   userB:
     group: groupB
+uif_userRules:
+  - name: rule1
+    scope: GLOBAL
+    type: SINGLE_MAPPING
+    dssUser: userA
+    targetUnix: unix-userA
+    targetHadoop: hadoop-userA
+  - name: rule2
+    scope: GLOBAL
+    type: REGEXP_RULE
+    ruleFrom: .*
+    targetUnix: unix-userB
+    targetHadoop: hadoop-userB
+uif_groupRules:
+  - name: ruleGroupA
+    scope: GLOBAL
+    type: SINGLE_MAPPING
+    dssGroup: groupA
+    targetUnix: unix-userA
+    targetHadoop: hadoop-userA
+  - name: ruleGroupB
+    scope: GLOBAL
+    type: REGEXP_RULE
+    ruleFrom: .*
+    targetUnix: unix-userB
+    targetHadoop: hadoop-userB
 ```
+
+
+
+
 
 Dependencies
 ------------
@@ -305,6 +344,32 @@ Sample DSS deployment playbook
             group: groupA
           userB:
             group: groupB
+        uif_userRules:
+          - name: rule1
+            scope: GLOBAL
+            type: SINGLE_MAPPING
+            dssUser: userA
+            targetUnix: unix-userA
+            targetHadoop: hadoop-userA
+          - name: rule2
+            scope: GLOBAL
+            type: REGEXP_RULE
+            ruleFrom: .*
+            targetUnix: unix-userB
+            targetHadoop: hadoop-userB
+        uif_groupRules:
+          - name: ruleGroupA
+            scope: GLOBAL
+            type: SINGLE_MAPPING
+            dssGroup: groupA
+            targetUnix: unix-userA
+            targetHadoop: hadoop-userA
+          - name: ruleGroupB
+            scope: GLOBAL
+            type: REGEXP_RULE
+            ruleFrom: .*
+            targetUnix: unix-userB
+            targetHadoop: hadoop-userB
 ```
 
 License
