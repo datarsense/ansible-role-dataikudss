@@ -162,12 +162,12 @@ spark_executionconfigs:
 |----------|-------------|
 |configure_uif| false |
 |uif_users| [] |
-|uif_userRules| [] |
-|uif_groupRules| [] |
+|uif_userrules| [] |
+|uif_grouprules| [] |
 
 The **uif_users** is a list which **contains local unix users and groups for which UIF impersonation is allowed**. You must fill it with the **list of users which have to be created** by ansible and the **UNIX groups** to which they belong. Only users belonging to these groups will be allowed to use the local code impersonation mechanism (Python, R, visual ML, spark). More on https://knowledge.dataiku.com/latest/kb/governance/Which-activities-in-DSS-require-that-a-user-be-added-to-the.html
 
-The **uif_userRules** and **uif_groupRules** are arrays which can contain **multiple uif user mapping** configuring mapping between a DSS user and an unix or hadoop user effectively running the DSS job when user isolation is enabled. Read more on https://doc.dataiku.com/dss/latest/user-isolation/initial-setup.html
+The **uif_userrules** and **uif_grouprules** are arrays which can contain **multiple uif user mapping** configuring mapping between a DSS user and an unix or hadoop user effectively running the DSS job when user isolation is enabled. Read more on https://doc.dataiku.com/dss/latest/user-isolation/initial-setup.html
 
 UIF rules types can be :
  - **IDENTITY** : Make the rule map each DSS user to a UNIX user of the same name.
@@ -181,7 +181,7 @@ uif_users:
     group: groupA
   userB:
     group: groupB
-uif_userRules:
+uif_userrules:
   - name: rule1
     scope: GLOBAL
     type: SINGLE_MAPPING
@@ -194,7 +194,7 @@ uif_userRules:
     ruleFrom: .*
     targetUnix: unix-userB
     targetHadoop: hadoop-userB
-uif_groupRules:
+uif_grouprules:
   - name: ruleGroupA
     scope: GLOBAL
     type: SINGLE_MAPPING
@@ -344,7 +344,7 @@ Sample DSS deployment playbook
             group: groupA
           userB:
             group: groupB
-        uif_userRules:
+        uif_userrules:
           - name: rule1
             scope: GLOBAL
             type: SINGLE_MAPPING
@@ -357,7 +357,7 @@ Sample DSS deployment playbook
             ruleFrom: .*
             targetUnix: unix-userB
             targetHadoop: hadoop-userB
-        uif_groupRules:
+        uif_grouprules:
           - name: ruleGroupA
             scope: GLOBAL
             type: SINGLE_MAPPING

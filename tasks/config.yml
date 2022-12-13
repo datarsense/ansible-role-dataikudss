@@ -66,7 +66,7 @@
     connect_to: "{{ dss_connection_info }}"
     settings:
       impersonation:
-        userRules: "{{ uif_userRules }}"
+        userRules: "{{ uif_userrules }}"
   tags: [dss-config, molecule-idempotence-notest]
 
 - name: Configure UIF group mappings
@@ -75,5 +75,5 @@
     connect_to: "{{ dss_connection_info }}"
     settings:
       impersonation:
-        groupRules: "{{ uif_groupRules }}"
+        groupRules: "{{ uif_grouprules }}"
   tags: [dss-config, molecule-idempotence-notest]

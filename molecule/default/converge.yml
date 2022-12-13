@@ -50,7 +50,7 @@
         group: groupA
       userB:
         group: groupB
-    uif_userRules:
+    uif_userrules:
       - name: rule1
         scope: GLOBAL
         type: SINGLE_MAPPING
@@ -63,7 +63,7 @@
         ruleFrom: .*
         targetUnix: unix-userB
         targetHadoop: hadoop-userB
-    uif_groupRules:
+    uif_grouprules:
       - name: ruleGroupA
         scope: GLOBAL
         type: SINGLE_MAPPING
