@@ -41,6 +41,7 @@
       - python3-pip
       - python3-setuptools
       - python2-minimal
+      - python-dateutil
       - python-six
   when: ansible_facts['os_family'] == 'Debian' and ansible_facts ['distribution_major_version'] == '10'
 
