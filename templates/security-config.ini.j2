@@ -1,0 +1,20 @@
+[users]
+# Enter here the list of groups that are allowed to execute commands.
+# DSS may impersonate all users belonging to one of these groups
+#
+# Specify this as a semicolon;separated;list
+#
+# This must double-check with the settings of the groups with
+# code-writing or Hadoop/Spark privileges in DSS
+allowed_user_groups = {% set semicolon = joiner(";") %}{% for user in uif_users -%}{{ semicolon() }}{{ uif_users[user].group }}{% endfor %}
+
+[dirs]
+# Absolute path to DSS data dir.
+dss_datadir = {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}
+
+# Additional 'allowed' folders. File operations are allowed in
+# the dss datadir and these folders. Use this if you use symlinks for jobs/
+# or any other DSS folder
+#
+# Specify this as a semicolon;separated;list
+additional_allowed_file_dirs =

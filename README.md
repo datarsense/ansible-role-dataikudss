@@ -157,6 +157,62 @@ spark_executionconfigs:
 |ldap_authorizedgroups| "dss-users" |
 
 
+### Optional variables for enabling User Isolation Framework (UIF)
+| Variable | Default value |
+|----------|-------------|
+|configure_uif| false |
+|uif_users| [] |
+|uif_userrules| [] |
+|uif_grouprules| [] |
+
+The **uif_users** is a list which **contains local unix users and groups for which UIF impersonation is allowed**. You must fill it with the **list of users which have to be created** by ansible and the **UNIX groups** to which they belong. Only users belonging to these groups will be allowed to use the local code impersonation mechanism (Python, R, visual ML, spark). More on https://knowledge.dataiku.com/latest/kb/governance/Which-activities-in-DSS-require-that-a-user-be-added-to-the.html
+
+The **uif_userrules** and **uif_grouprules** are arrays which can contain **multiple uif user mapping** configuring mapping between a DSS user and an unix or hadoop user effectively running the DSS job when user isolation is enabled. Read more on https://doc.dataiku.com/dss/latest/user-isolation/initial-setup.html
+
+UIF rules types can be :
+ - **IDENTITY** : Make the rule map each DSS user to a UNIX user of the same name.
+ - **SINGLE_MAPPING** :  Make the rule map a given DSS user/group configured in the **dssUser** or**dssGroup** variable to a given UNIX user defined in the **targetUnix** (or **targetHadoop**) variable.
+ - **REGEXP_RULE** : Make the rule map a DSS users matching a given regular expression configured in the **ruleFrom** variable to a given UNIX user defined in the **targetUnix** (or**targetHadoop**) variable.
+
+```
+configure_uif: true
+uif_users:
+  userA:
+    group: groupA
+  userB:
+    group: groupB
+uif_userrules:
+  - name: rule1
+    scope: GLOBAL
+    type: SINGLE_MAPPING
+    dssUser: userA
+    targetUnix: unix-userA
+    targetHadoop: hadoop-userA
+  - name: rule2
+    scope: GLOBAL
+    type: REGEXP_RULE
+    ruleFrom: .*
+    targetUnix: unix-userB
+    targetHadoop: hadoop-userB
+uif_grouprules:
+  - name: ruleGroupA
+    scope: GLOBAL
+    type: SINGLE_MAPPING
+    dssGroup: groupA
+    targetUnix: unix-userA
+    targetHadoop: hadoop-userA
+  - name: ruleGroupB
+    scope: GLOBAL
+    type: REGEXP_RULE
+    ruleFrom: .*
+    targetUnix: unix-userB
+    targetHadoop: hadoop-userB
+```
+
+
+
+
+
 Dependencies
 ------------
 The following modules provided by dataiku are required for DSS config automation :
@@ -282,6 +338,38 @@ Sample DSS deployment playbook
             repositoryURL: docker.io
             prePushMode: NONE
             dockerTLSVerify: false
+        configure_uif: true
+        uif_users:
+          userA:
+            group: groupA
+          userB:
+            group: groupB
+        uif_userrules:
+          - name: rule1
+            scope: GLOBAL
+            type: SINGLE_MAPPING
+            dssUser: userA
+            targetUnix: unix-userA
+            targetHadoop: hadoop-userA
+          - name: rule2
+            scope: GLOBAL
+            type: REGEXP_RULE
+            ruleFrom: .*
+            targetUnix: unix-userB
+            targetHadoop: hadoop-userB
+        uif_grouprules:
+          - name: ruleGroupA
+            scope: GLOBAL
+            type: SINGLE_MAPPING
+            dssGroup: groupA
+            targetUnix: unix-userA
+            targetHadoop: hadoop-userA
+          - name: ruleGroupB
+            scope: GLOBAL
+            type: REGEXP_RULE
+            ruleFrom: .*
+            targetUnix: unix-userB
+            targetHadoop: hadoop-userB
 ```
 
 License

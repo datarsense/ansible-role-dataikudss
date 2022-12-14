@@ -41,6 +41,27 @@
     state: present
   tags: [setup, dss-setup]
 
+- name: Create UIF groups
+  become: true
+  when: configure_uif
+  ansible.builtin.group:
+    name: "{{ item.value.group }}"
+    state: present
+  loop: "{{ uif_users | dict2items }}"
+  tags: [setup, dss-setup]
+
+- name: Create UIF users
+  become: true
+  when: configure_uif
+  ansible.builtin.user:
+    name: "{{ item.key }}"
+    group: "{{ item.value.group }}"
+    home: "{{ dss_service_user_home_basedir }}/{{ item.key }}"
+    shell: "{{ dss_service_user_shell }}"
+    state: present
+  loop: "{{ uif_users | dict2items }}"
+  tags: [setup, dss-setup]
+
 - name: Allow admin group executing playbook to run any commands as DSS service user
   become: true
   community.general.sudoers:
@@ -65,5 +86,5 @@
     path: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}"
     state: directory
     owner: "{{ dss_service_user }}"
-    mode: "u=rwx,g=,o="
+    mode: "u=rwx,g=x,o=x"
   tags: [setup, dss-setup]
