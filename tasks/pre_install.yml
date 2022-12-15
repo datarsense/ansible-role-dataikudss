@@ -24,6 +24,7 @@
   become: true
   when: result.reboot_required
   ansible.builtin.reboot:
+  tags: [setup]
 
 - name: Increase system limits as required by DSS
   become: true
