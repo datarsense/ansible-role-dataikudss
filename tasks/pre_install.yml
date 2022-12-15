@@ -20,6 +20,11 @@
   failed_when: result.msg | default('ok', True) is not search('(^ok$|libselinux-python|(SELinux state changed))')
   tags: [setup]
 
+- name: Reboot server after disabling SELinux when required
+  become: true
+  when: result.reboot_required
+  ansible.builtin.reboot:
+
 - name: Increase system limits as required by DSS
   become: true
   community.general.pam_limits:
