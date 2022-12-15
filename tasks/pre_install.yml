@@ -23,7 +23,7 @@
 - name: Reboot server after disabling SELinux when required
   become: true
   when: selinuxdisabled is changed
-  ansible.bultin.shell: 
+  ansible.builtin.shell: 
     cmd: "sleep 5 && reboot"
     async: 1
     poll: 0
