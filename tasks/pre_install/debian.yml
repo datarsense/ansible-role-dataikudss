@@ -79,3 +79,13 @@
       - python3.7
       - python3-selinux
   when: ansible_facts['os_family'] == 'Ubuntu' and ansible_facts ['distribution_major_version'] == '20.04'
+
+- name: Disable SELinux
+  become: true
+  when: 'selinux-policy-default' in ansible_facts.packages
+  ansible.posix.selinux:
+    state: disabled
+  register: selinuxdisabled
+  notify:
+    - Reboot server
+  tags: [setup]
