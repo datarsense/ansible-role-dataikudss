@@ -89,6 +89,7 @@
 
 - name: Disable SELinux
   become: true
+  when: "'selinux-policy' in ansible_facts.packages"
   ansible.posix.selinux:
     state: disabled
   register: selinuxdisabled
