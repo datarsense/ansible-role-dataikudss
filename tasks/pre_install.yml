@@ -17,13 +17,8 @@
   ansible.posix.selinux:
     state: disabled
   register: selinuxdisabled
-  failed_when: selinuxdisabled.msg | default('ok', True) is not search('(^ok$|libselinux-python|(SELinux state changed))')
-  tags: [setup]
-
-- name: Reboot server after disabling SELinux when required
-  become: true
-  when: selinuxdisabled is changed
-  ansible.builtin.reboot:
+  notify:
+    - Reboot server
   tags: [setup]
 
 - name: Increase system limits as required by DSS

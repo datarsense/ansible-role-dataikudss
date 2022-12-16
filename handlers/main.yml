@@ -51,3 +51,8 @@
     dest: "/etc/dataiku-security/{{ dss_install_id.stdout }}/security-config.ini"
     mode: 0644
   tags: [dss]
+
+- name: Reboot server
+  become: true
+  ansible.builtin.reboot:
+  tags: [setup]
