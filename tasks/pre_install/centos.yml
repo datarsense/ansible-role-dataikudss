@@ -78,7 +78,6 @@
   vars:
     packages:
       - ncurses-compat-libs
-      - libselinux-python
       - python3-libselinux
       - python2
       - python2-setuptools
