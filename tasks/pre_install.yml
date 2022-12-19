@@ -16,6 +16,9 @@
   ansible.builtin.import_tasks: pre_install/centos.yml
   when: ansible_distribution == 'CentOS'
 
+- name: Flush handlers to reboot after disabling SELinux if needed
+  ansible.builtin.meta: flush_handlers
+
 - name: Increase system limits as required by DSS
   become: true
   community.general.pam_limits:

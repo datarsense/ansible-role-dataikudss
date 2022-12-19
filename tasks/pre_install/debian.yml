@@ -89,6 +89,3 @@
   notify:
     - Reboot server
   tags: [setup]
-
-- name: Flush handlers to reboot after disabling SELinux if needed
-  ansible.builtin.meta: flush_handlers
