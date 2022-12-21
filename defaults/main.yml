@@ -47,6 +47,6 @@ ldap_authorizedgroups: "dss-users"
 
 # Optional : activate User Isolation Framework (UIF)
 configure_uif: false
-uif_users: []
+uif_users: {}
 uif_userrules: []
 uif_grouprules: []

@@ -54,13 +54,15 @@
       - libgomp
       - python3-setuptools
 
-- name: Installing CentOS 7 sepecific packages
+- name: Installing CentOS 7 specific packages
   become: true
   ansible.builtin.yum:
     name: "{{ packages }}"
     state: present
   vars:
     packages:
+      - libselinux-python
+      - libselinux-python3
       - python3
       - python-setuptools
       - python-six
@@ -68,7 +70,7 @@
       - python-dateutil
   when: ansible_facts['os_family'] == 'RedHat' and ansible_facts ['distribution_major_version'] == '7'
 
-- name: Installing CentOS 8 sepecific packages
+- name: Installing CentOS 8 specific packages
   become: true
   ansible.builtin.yum:
     name: "{{ packages }}"
@@ -76,9 +78,20 @@
   vars:
     packages:
       - ncurses-compat-libs
+      - python3-libselinux
       - python2
       - python2-setuptools
       - python2-six
       - python2-requests
       - python36 
   when: ansible_facts['os_family'] == 'RedHat' and ansible_facts ['distribution_major_version'] == '8'
+
+- name: Disable SELinux
+  become: true
+  when: "'selinux-policy' in ansible_facts.packages"
+  ansible.posix.selinux:
+    state: disabled
+  register: selinuxdisabled
+  notify:
+    - Reboot server
+  tags: [setup]

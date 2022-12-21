@@ -4,6 +4,10 @@
     dss_node_hostname: "{{ ansible_fqdn if dss_node_poll_fqdn else ansible_host }}"
   tags: [setup, dss-setup, dss]
 
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
+
 - name: Debian-like distributions specific preinstall tasks
   ansible.builtin.import_tasks: pre_install/debian.yml
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
@@ -12,13 +16,8 @@
   ansible.builtin.import_tasks: pre_install/centos.yml
   when: ansible_distribution == 'CentOS'
 
-- name: Disable SELinux
-  become: true
-  ansible.posix.selinux:
-    state: disabled
-  register: result
-  failed_when: result.msg | default('ok', True) is not search('(^ok$|libselinux-python|(SELinux state changed))')
-  tags: [setup]
+- name: Flush handlers to reboot after disabling SELinux if needed
+  ansible.builtin.meta: flush_handlers
 
 - name: Increase system limits as required by DSS
   become: true

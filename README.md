@@ -161,11 +161,11 @@ spark_executionconfigs:
 | Variable | Default value |
 |----------|-------------|
 |configure_uif| false |
-|uif_users| [] |
+|uif_users| {} |
 |uif_userrules| [] |
 |uif_grouprules| [] |
 
-The **uif_users** is a list which **contains local unix users and groups for which UIF impersonation is allowed**. You must fill it with the **list of users which have to be created** by ansible and the **UNIX groups** to which they belong. Only users belonging to these groups will be allowed to use the local code impersonation mechanism (Python, R, visual ML, spark). More on https://knowledge.dataiku.com/latest/kb/governance/Which-activities-in-DSS-require-that-a-user-be-added-to-the.html
+The **uif_users** is a dict which **contains local unix users and groups for which UIF impersonation is allowed**. You must fill it with the **list of users which have to be created** by ansible and the **UNIX groups** to which they belong. Only users belonging to these groups will be allowed to use the local code impersonation mechanism (Python, R, visual ML, spark). More on https://knowledge.dataiku.com/latest/kb/governance/Which-activities-in-DSS-require-that-a-user-be-added-to-the.html
 
 The **uif_userrules** and **uif_grouprules** are arrays which can contain **multiple uif user mapping** configuring mapping between a DSS user and an unix or hadoop user effectively running the DSS job when user isolation is enabled. Read more on https://doc.dataiku.com/dss/latest/user-isolation/initial-setup.html
 
@@ -209,17 +209,31 @@ uif_grouprules:
     targetHadoop: hadoop-userB
 ```
 
-
-
-
-
 Dependencies
 ------------
-The following modules provided by dataiku are required for DSS config automation :
+**Python3**, **ansible >= 5.8** and **jmespath** are required by this role. A requirements.txt file including those dependencies is provided with this role.
+
+The following modules provided by Dataiku are required for DSS config automation :
   - https://github.com/dataiku/dataiku-ansible-modules
   - https://github.com/dataiku/dataiku-api-client-python
 
-Install the required modules with the following command :
+Create a `requirements.yml` file in your playbook. The `requirements.yml` has to include the following content to install the role and it's dependencies :
+```
+---
+- src: git+https://github.com/dataiku/dataiku-api-client-python
+  name: dataiku-api-client-python
+  version: release/8.0
+
+- src: git+https://github.com/dataiku/dataiku-ansible-modules
+  name: dataiku.dataiku-ansible-modules
+  version: master
+
+- src: git+https://github.com/datarsense/ansible-role-dataikudss.git
+  name: datarsense.dataikudss
+  version: main
+  ```
+
+Then, install the role and it's dependencies with the following command :
 ```
 ansible-galaxy install -r requirements.yml
 ```
@@ -230,47 +244,19 @@ Sample DSS deployment playbook
 
 ```
 ---
-- name: Deploy
-  hosts: all
+
+- hosts: all
+  gather_facts: true
   tasks:
-    - name: "Include datarsense.dataikudss"
+    - name: "Deploy DSS with containerized execution support"
       ansible.builtin.include_role:
         name: "datarsense.dataikudss"
       vars:
-        dss_base_repository_url: https://cdn.downloads.dataiku.com/public/studio
-        dataiku_python_api_package: "git+https://github.com/dataiku/dataiku-api-client-python@release/5.1#egg=dataiku-api-client"
-        dss_version: "10.0.7"
-        dss_api_version: "5.1"
-        dss_service_user: dataiku
-        dss_service_user_shell: "/bin/bash"
-        dss_service_user_home_basedir: /home
-        dss_install_dir_location: /opt/dataiku
-        dss_node_poll_fqdn: true # If true, use ansible_fqdn else use ansible_host
-        dss_license_file: license.json
-        dss_node_type: design
-        dss_datadir: dss_data
-        dss_network_port: 10000
+        dss_version: "11.1.1"
+        dss_hadoop_package: "dataiku-dss-hadoop-standalone-libs-generic-hadoop3-11.1.1.tar.gz"
+        dss_spark_package: "dataiku-dss-spark-standalone-11.1.1-3.2.1-generic-hadoop3.tar.gz"
 
-        # Optional : add dss spark support
-        configure_spark: true
-        dss_hadoop_package: "dataiku-dss-hadoop-standalone-libs-generic-hadoop3-10.0.7.tar.gz"
-        dss_spark_package: "dataiku-dss-spark-standalone-10.0.7-3.1.2-generic-hadoop3.tar.gz"
-        spark_executionconfigs:
-          - name": SparkOnKubernetes
-            kubernetesSettings:
-              managedKubernetes: true
-              managedNamespace: testnamespace
-              authenticationMode: BUILTIN
-              ensureNamespaceCompliance: false
-              createNamespace: false
-              baseImageType: SPARK
-              baseImage: dss_spark_base:latest
-              repositoryURL: docker.io
-              prePushMode: NONE
-              dockerTLSVerify: false
-
-        # Optional : add LDAP login capability
-        configure_ldap_settings: "false"
+        configure_ldap_settings: "true"
         ldap_url: "ldap://ldap.internal.example.com/dc=example,dc=com"
         ldap_binddn: "uid=readonly,ou=users,dc=example,dc=com"
         ldap_bindpassword: ""
@@ -285,7 +271,55 @@ Sample DSS deployment playbook
         ldap_groupnameattribute: "cn"
         ldap_groupprofiles: []
         ldap_authorizedgroups: "dss-users"
+        
+        configure_uif: true
+        uif_users:
+          userA:
+            group: groupA
+          userB:
+            group: groupB
+        uif_userrules:
+          - name: rule1
+            scope: GLOBAL
+            type: SINGLE_MAPPING
+            dssUser: userA
+            targetUnix: unix-userA
+            targetHadoop: hadoop-userA
+          - name: rule2
+            scope: GLOBAL
+            type: REGEXP_RULE
+            ruleFrom: .*
+            targetUnix: unix-userB
+            targetHadoop: hadoop-userB
+        uif_grouprules:
+          - name: ruleGroupA
+            scope: GLOBAL
+            type: SINGLE_MAPPING
+            dssGroup: groupA
+            targetUnix: unix-userA
+            targetHadoop: hadoop-userA
+          - name: ruleGroupB
+            scope: GLOBAL
+            type: REGEXP_RULE
+            ruleFrom: .*
+            targetUnix: unix-userB
+            targetHadoop: hadoop-userB
 
+        configure_spark: true
+        spark_executionconfigs:
+          - name": SparkOnKubernetes
+            kubernetesSettings:
+              managedKubernetes: true
+              managedNamespace: testnamespace
+              authenticationMode: BUILTIN
+              ensureNamespaceCompliance: false
+              createNamespace: false
+              baseImageType: SPARK
+              baseImage: dss_spark_base:latest
+              repositoryURL: docker.io
+              prePushMode: NONE
+              dockerTLSVerify: false
+        
         configure_k8s: true
         k8s_executionconfigs:
           - name: test1
@@ -338,38 +372,6 @@ Sample DSS deployment playbook
             repositoryURL: docker.io
             prePushMode: NONE
             dockerTLSVerify: false
-        configure_uif: true
-        uif_users:
-          userA:
-            group: groupA
-          userB:
-            group: groupB
-        uif_userrules:
-          - name: rule1
-            scope: GLOBAL
-            type: SINGLE_MAPPING
-            dssUser: userA
-            targetUnix: unix-userA
-            targetHadoop: hadoop-userA
-          - name: rule2
-            scope: GLOBAL
-            type: REGEXP_RULE
-            ruleFrom: .*
-            targetUnix: unix-userB
-            targetHadoop: hadoop-userB
-        uif_grouprules:
-          - name: ruleGroupA
-            scope: GLOBAL
-            type: SINGLE_MAPPING
-            dssGroup: groupA
-            targetUnix: unix-userA
-            targetHadoop: hadoop-userA
-          - name: ruleGroupB
-            scope: GLOBAL
-            type: REGEXP_RULE
-            ruleFrom: .*
-            targetUnix: unix-userB
-            targetHadoop: hadoop-userB
 ```
 
 License

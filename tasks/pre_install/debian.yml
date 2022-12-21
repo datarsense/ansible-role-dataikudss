@@ -39,8 +39,10 @@
       - python3.7 
       - python3-distutils
       - python3-pip
+      - python3-selinux
       - python3-setuptools
       - python2-minimal
+      - python-dateutil
       - python-six
   when: ansible_facts['os_family'] == 'Debian' and ansible_facts ['distribution_major_version'] == '10'
 
@@ -52,6 +54,7 @@
   vars:
     packages:
       - python3.6
+      - python3-selinux
   when: ansible_facts['os_family'] == 'Ubuntu' and ansible_facts ['distribution_major_version'] == '16.04'
 
 - name: Installing Ubuntu 18.04 specific packages
@@ -63,6 +66,7 @@
     packages:
       - python3.6
       - python3-distutils
+      - python3-selinux
   when: ansible_facts['os_family'] == 'Ubuntu' and ansible_facts ['distribution_major_version'] == '18.04'
 
 - name: Installing Ubuntu 20.04 specific packages
@@ -73,4 +77,15 @@
   vars:
     packages:
       - python3.7
+      - python3-selinux
   when: ansible_facts['os_family'] == 'Ubuntu' and ansible_facts ['distribution_major_version'] == '20.04'
+
+- name: Disable SELinux
+  become: true
+  when: "'selinux-policy-default' in ansible_facts.packages"
+  ansible.posix.selinux:
+    state: disabled
+  register: selinuxdisabled
+  notify:
+    - Reboot server
+  tags: [setup]
