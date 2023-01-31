@@ -20,6 +20,7 @@ dss_network_port: 10000
 
 # Optional : add containerized execution on kubernetes capability
 configure_k8s: false
+download_dss_docker_images: false
 k8s_executionconfigs: []
 
 # Optional : add dss spark support

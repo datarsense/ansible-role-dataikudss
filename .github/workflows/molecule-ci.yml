@@ -36,5 +36,6 @@ jobs:
           LICENSE: ${{ secrets.LICENSE }}
       - name: Test with molecule
         run: |
+          ansible-galaxy install weareinteractive.docker
           ansible-galaxy install -r requirements.yml
           molecule test --platform-name=${{ matrix.platform }} --destroy=always
