@@ -11,8 +11,8 @@
 
 - name: Check if docker service is installed
   ansible.builtin.fail:
-    msg: Docker service has to be installed to make this role able to download and load DSS docker images for containerized execution.
-  when: (configure_k8s) and (download_dss_docker_images) and ('docker' not in services)
+    msg: Docker service has to be installed to make this role able to build images for code environments when containerized execution is enabled.
+  when: (configure_k8s) and ('docker' not in services)
 
 
 # Run role tasks
@@ -24,3 +24,6 @@
 
 - name: CONGIGURE DSS
   ansible.builtin.import_tasks: config.yml
+
+- name: DOWNLOAD AND LOAD DOCKER_IMAGES
+  ansible.builtin.import_tasks: docker_images.yml
