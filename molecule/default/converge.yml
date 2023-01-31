@@ -81,8 +81,9 @@
         targetUnix: unix-userB
         targetHadoop: hadoop-userB
   tasks:
-    - name: "Update Repository cache"
+    - name: "Update Repository cache and install gnupg (required by apt-key)"
       apt:
+        name: gnupg
         update_cache: true
         cache_valid_time: 3600
         force_apt_get: true
