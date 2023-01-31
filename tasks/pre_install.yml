@@ -40,6 +40,15 @@
     state: present
   tags: [setup, dss-setup]
 
+- name: Add DSS service user to the docker group when K8S configuration is enabled
+  become: true
+  when: configure_k8s
+  ansible.builtin.user:
+    name: "{{ dss_service_user }}"
+    groups: docker
+    append: yes
+  tags: [setup, dss-setup]
+
 - name: Create UIF groups
   become: true
   when: configure_uif
