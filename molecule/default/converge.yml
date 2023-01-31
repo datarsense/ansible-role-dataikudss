@@ -18,6 +18,7 @@
           prePushMode: NONE
           dockerTLSVerify: false
     configure_k8s: true
+    download_dss_docker_images: true
     k8s_executionconfigs:
       - name: test1
         type: KUBERNETES
@@ -77,6 +78,9 @@
         targetUnix: unix-userB
         targetHadoop: hadoop-userB
   tasks:
+    - name: "Deploy docker"
+      ansible.builtin.include_role:
+        name: weareinteractive.docker
     - name: "Test DSS install"
       ansible.builtin.include_role:
         name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
