@@ -78,6 +78,12 @@
         targetUnix: unix-userB
         targetHadoop: hadoop-userB
   tasks:
+    - name: "Update Repository cache"
+      apt:
+        update_cache: true
+        cache_valid_time: 3600
+        force_apt_get: true
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
     - name: "Deploy docker"
       ansible.builtin.include_role:
         name: weareinteractive.docker
