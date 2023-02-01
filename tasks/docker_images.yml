@@ -3,7 +3,7 @@
 - name: Test if DSS base images provided by Dataiku are registered locally
   become: true
   become_user: "{{ dss_service_user }}"
-  docker_image_info:
+  community.docker.docker_image_info:
     name:
       - "dataiku-dss-container-exec-base:dss-{{ dss_version }}-r-py3.6"
       - "dataiku-dss-spark-exec-base:dss-{{ dss_version }}-r-py3.6"
