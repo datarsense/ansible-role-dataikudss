@@ -98,6 +98,9 @@
     - name: "Deploy docker"
       ansible.builtin.include_role:
         name: weareinteractive.docker
+      vars:
+        docker_service_enabled: false
+        docker_service_state: stopped
       when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
     - name: "Test DSS install"
       ansible.builtin.include_role:
