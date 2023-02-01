@@ -36,33 +36,14 @@
     #state: forcereinstall # Useful when release/5.1 gets updated
   tags: [setup, dss-setup, dss-api]
 
-- name: Install DSS
+- name: Run the Dataiku DSS installer to install DSS for the first time
+  become: true
+  become_user: "{{ dss_service_user }}"
+  ansible.builtin.command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/installer.sh -d {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }} -p {{ dss_network_port }} -t {{ dss_node_type }}"
+  args:
+    creates: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/dss-version.json"
+  register: dss_install
   tags: [dss]
-  block:
-    - name: Run the Dataiku DSS installer to install DSS for the first time
-      become: true
-      become_user: "{{ dss_service_user }}"
-      ansible.builtin.command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/installer.sh -d {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }} -p {{ dss_network_port }} -t {{ dss_node_type }}"
-      args:
-        creates: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/dss-version.json"
-      register: dss_install
-
-    - name: Notify spark install/update handler
-      ansible.builtin.assert: { that: true, quiet: true }
-      changed_when: dss_install.changed and configure_spark
-      notify:
-        - Download Hadoop package
-        - Install or upgrade standalone Hadoop support
-        - Download Spark package
-        - Install or upgrade standalone Spark support
-
-    - name: Notify UIF install/update handler
-      ansible.builtin.assert: { that: true, quiet: true }
-      changed_when: dss_install.changed and configure_uif
-      notify:
-        - Activate UIF
-        - Read dss install id
-        - Deploy UIF configuration file
 
 - name: Read dss-version.json file
   become: true
@@ -97,26 +78,65 @@
       become_user: "{{ dss_service_user }}"
       ansible.builtin.command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/installer.sh -u -y -d {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}"
       when: current_dss_version is version(dss_version,  operator='lt', strict=True)
+      register: dss_upgrade
 
-    - name: Notify spark install/update handler
-      ansible.builtin.assert: { that: true, quiet: true }
-      changed_when: configure_spark
-      notify:
-        - Download Hadoop package
-        - Install or upgrade standalone Hadoop support
-        - Download Spark package
-        - Install or upgrade standalone Spark support
+- name: Download Hadoop package
+  when: configure_spark and ((dss_install is defined and dss_install.changed) or (dss_upgrade is defined and dss_upgrade.changed))
+  become: true
+  become_user: "{{ dss_service_user }}"
+  ansible.builtin.get_url:
+    url: "{{ dss_base_repository_url }}/{{ dss_version }}/{{ dss_hadoop_package }}"
+    dest: "{{ dss_install_dir_location }}/{{ dss_hadoop_package }}"
+    mode: '644'
+  tags: [dss]
 
-    - name: Notify UIF install/update handler
-      ansible.builtin.assert: { that: true, quiet: true }
-      changed_when: configure_uif
-      notify:
-        - Activate UIF
-        - Read dss install id
-        - Deploy UIF configuration file
+- name: Install or upgrade standalone Hadoop support
+  when: configure_spark and ((dss_install is defined and dss_install.changed) or (dss_upgrade is defined and dss_upgrade.changed))
+  become: true
+  become_user: "{{ dss_service_user }}"
+  ansible.builtin.command: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/bin/dssadmin install-hadoop-integration -standaloneArchive {{ dss_install_dir_location }}/{{ dss_hadoop_package }}"
+  tags: [dss]
 
-- name: Flush handlers to install/upgrade optional features
-  ansible.builtin.meta: flush_handlers
+- name: Download Spark package
+  when: configure_spark and ((dss_install is defined and dss_install.changed) or (dss_upgrade is defined and dss_upgrade.changed))
+  become: true
+  become_user: "{{ dss_service_user }}"
+  ansible.builtin.get_url:
+    url: "{{ dss_base_repository_url }}/{{ dss_version }}/{{ dss_spark_package }}"
+    dest: "{{ dss_install_dir_location }}/{{ dss_spark_package }}"
+    mode: '644'
+  tags: [dss]
+
+- name: Install or upgrade standalone Spark support
+  when: configure_spark and ((dss_install is defined and dss_install.changed) or (dss_upgrade is defined and dss_upgrade.changed))
+  become: true
+  become_user: "{{ dss_service_user }}"
+  ansible.builtin.command: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/bin/dssadmin install-spark-integration -standaloneArchive {{ dss_install_dir_location }}/{{ dss_spark_package }}{{ ' -forK8S' if configure_k8s }}"
+  tags: [dss]
+
+- name: Activate UIF
+  when: configure_uif and ((dss_install is defined and dss_install.changed) or (dss_upgrade is defined and dss_upgrade.changed))
+  become: true
+  ansible.builtin.command: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/bin/dssadmin install-impersonation {{ dss_service_user }}"
+  tags: [dss]
+
+- name: Read dss install id
+  when: configure_uif and ((dss_install is defined and dss_install.changed) or (dss_upgrade is defined and dss_upgrade.changed))
+  become: true
+  become_user: "{{ dss_service_user }}"
+  ansible.builtin.command: /bin/sh -c "grep installid {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/install.ini | cut -d ' ' -f3" 
+  register: dss_install_id
+  changed_when: false
+  tags: [dss]
+
+- name: Deploy UIF configuration file
+  when: configure_uif and ((dss_install is defined and dss_install.changed) or (dss_upgrade is defined and dss_upgrade.changed))
+  become: true
+  ansible.builtin.template: 
+    src: "security-config.ini.j2"
+    dest: "/etc/dataiku-security/{{ dss_install_id.stdout }}/security-config.ini"
+    mode: 0644
+  tags: [dss]
 
 - name: Copy license file
   become: true
