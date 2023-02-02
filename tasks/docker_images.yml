@@ -33,6 +33,6 @@
   become: true
   ansible.builtin.debug:
     msg: "{{ item }}"
-  loop: "{{ loaded_images.images_names }}"
+  loop: "{{ loaded_images.image_names }}"
   when: download_dss_docker_images and loaded_images.changed
   tags: [docker-images]
