@@ -2,7 +2,6 @@
 
 - name: Test if DSS base images provided by Dataiku are registered locally
   become: true
-  become_user: "{{ dss_service_user }}"
   community.docker.docker_image_info:
     name:
       - "dataiku-dss-container-exec-base:dss-{{ dss_version }}-r-py3.6"
@@ -24,7 +23,6 @@
 
 - name: Load all base images from archive
   become: true
-  become_user: "{{ dss_service_user }}"
   community.docker.docker_image_load:
     path: "{{ dss_install_dir_location }}/dataiku-dss-ALL-base_dss-{{ dss_version }}-r-py3.6.tar.gz"
   register: loaded_images
@@ -33,7 +31,6 @@
 
 - name: Process images list using a loop
   become: true
-  become_user: "{{ dss_service_user }}"
   ansible.builtin.debug:
     msg: "{{ item }}"
   loop: "{{ loaded_images.images_names }}"
