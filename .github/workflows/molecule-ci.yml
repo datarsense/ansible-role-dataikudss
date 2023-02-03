@@ -12,6 +12,7 @@ jobs:
           python3 -m pip install --upgrade ansible==5.9.0 yamllint ansible-lint
       - name: Ansible Lint
         run: |
+          ansible-galaxy install -r requirements.yml
           ansible-lint -x package-latest
   test:
     runs-on: ubuntu-20.04
