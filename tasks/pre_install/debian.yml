@@ -80,6 +80,14 @@
       - python3-selinux
   when: ansible_facts['os_family'] == 'Ubuntu' and ansible_facts ['distribution_major_version'] == '20.04'
 
+- name: Set Python 3.7 as the default python interpreter for Debian 10 and Ubuntu 20.04
+  community.general.alternatives:
+    name: python
+    path: /usr/bin/python3.7
+    link: /usr/bin/python
+    state: selected
+  when: (ansible_facts['os_family'] == 'Debian' and ansible_facts ['distribution_major_version'] == '10') or (ansible_facts['os_family'] == 'Ubuntu' and ansible_facts ['distribution_major_version'] == '20.04')
+
 - name: Disable SELinux
   become: true
   when: "'selinux-policy-default' in ansible_facts.packages"
