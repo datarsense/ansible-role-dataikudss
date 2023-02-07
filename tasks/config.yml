@@ -49,14 +49,6 @@
     settings:
       sparkSettings:
         sparkEnabled: true
-  tags: [dss-config, molecule-idempotence-notest]
-
-- name: Enable spark on kubernetes support in DSS settings when both spark and kubernetes are enabled
-  when: configure_spark and configure_k8s
-  dss_general_settings:
-    connect_to: "{{ dss_connection_info }}"
-    settings:
-      sparkSettings:
         executionConfigs: "{{ spark_executionconfigs }}"
   tags: [dss-config, molecule-idempotence-notest]
 
