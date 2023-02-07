@@ -5,7 +5,7 @@ An Ansible role automating Dataiku DSS deployment.
 
 Requirements
 ------------
-The role is compatible with **Debian 10**, **Centos 7**, and **Centos 8**. Debian 11 is not supported as it is not a DSS 10.x supported OS. 
+The role is compatible with **Debian 10**, **Centos 7**, and **Centos 8**. Debian 11 is not supported as it is not a DSS 11.x supported OS. 
 
 **Ansible 5.8 or newer** is required on the host running the ansible playbook. The account used for running the playbook must have **sudo** privileges on the remote environment and must be allowed to become :
   - **root** for pre-install stage (installing packages, creating the dss servie user)
@@ -112,17 +112,136 @@ A configuration example is provided below with **two kubernetes execution config
 |configure_spark| true |
 |dss_hadoop_package|"dataiku-dss-hadoop-standalone-libs-generic-hadoop3-10.0.7.tar.gz"|
 |dss_spark_package| "dataiku-dss-spark-standalone-10.0.7-3.1.2-generic-hadoop3.tar.gz"|
-|spark_executionconfigs| [] |
+|spark_executionconfigs| _see below_ |
 
-The **spark_executionconfigs** is an array which **can contain multiple spark execution configurations** to match different business scenario when managing a spark cluster on kubernetes from DSS. 
+The **spark_executionconfigs** is an array which **can contain multiple spark execution configurations** to match different business scenario, including Spark on kubernetes. By default, this variable mirrors the default spark configuration of a DSS instance :
 
-This variable is used to configure spark settings for **spark on kubernetes** when both **configure_spark** and **configure_k8s** are **true***. Other spark deployment scenarios are not supported in this ansible role.
-
-A configuration example is provided below. Please make sure to replace sample **repositoryURL**, **baseImage**, and set a valid kubernetes namespace when using this sample. The **authenticationMode** can be either `BUILTIN` or `DYNAMIC_SERVICE_ACCOUNT` : set this variable according with your user isolation needs. Read more on [
-Workload isolation on Kubernetes](https://doc.dataiku.com/dss/latest/user-isolation/capabilities/kubernetes.html) dataiku documentation.
 ```
 spark_executionconfigs:
-  - name": SparkOnKubernetes
+  - name: default
+    description: |- 
+      This default configuration sets a few parameters that are suitable for a wide range of use cases.
+      Importantly in order to work in all circumstances it does not set the spark master configuration.
+      It will thus use the master defined by your default Spark configuration.
+      This may lead Spark jobs to execute locally without using your cluster. You may need for example to add spark.master\u003dyarn-client
+    conf:
+      - key: spark.executor.memory
+        value: 2400m
+        isFinal: false
+        secret: false
+      - key: spark.sql.shuffle.partitions
+        value: 40
+        isFinal: false
+        secret: false
+      - key: spark.yarn.executor.memoryOverhead
+        value: 600
+        isFinal: false
+        secret: false
+      - key: spark.port.maxRetries
+        value: 200
+        isFinal: false
+        secret: false
+  - name: sample-yarn-config
+    description: |- 
+      This sample configuration shows a possible set of parameters for running DSS Spark jobs on YARN.
+      These settings are suitable for a small cluster.
+      You will need to tune spark.executor.instances spark.executor.cores and memory settings based on the size of your YARN cluster.
+    conf :
+      - key: spark.master
+        value: yarn-client
+        isFinal: false
+        secret: false
+      - key: spark.executor.memory
+        value: 4g
+        isFinal: false
+        secret: false
+      - key: spark.executor.instances
+        value: 4
+        isFinal: false
+        secret: false
+      - key: spark.executor.cores
+        value: 2
+        isFinal: false
+        secret: false
+      - key: spark.sql.shuffle.partitions
+        value: 40
+        isFinal: false
+        secret: false
+      - key: spark.yarn.executor.memoryOverhead
+        value: 1200
+        isFinal: false
+        secret: false
+      - key: spark.port.maxRetries
+        value: 200
+        isFinal: false
+        secret: false      
+  - name: sample-local-config
+    description: |-
+      This sample configuration shows a possible set of parameters for running DSS Spark jobs locally (non distributed).
+      This can be useful for testing on small jobs as local Spark jobs start faster than YARN ones but is not suitable for production usage.
+    conf:
+      - key: spark.master
+        value: local[4]
+        isFinal: false
+        secret: false  
+      - key: spark.driver.memory
+        value: 3g
+        isFinal: false
+        secret: false
+      - key: spark.sql.shuffle.partitions
+        value: 40
+        isFinal: false
+        secret: false
+      - key: spark.port.maxRetries
+        value: 200
+        isFinal: false
+        secret: false  
+
+```
+
+This variable can be used to configure spark settings for **spark on kubernetes** when both **configure_spark** and **configure_k8s** are **true***.
+
+A configuration example is provided below. Please make sure to replace sample `repositoryURL: docker.io`, `baseImage: dss_spark_base:latest`, and to set a valid kubernetes namespace when using this sample. The **authenticationMode** can be either `BUILTIN` or `DYNAMIC_SERVICE_ACCOUNT` : set this variable according with your user isolation needs. Read more on [
+Workload isolation on Kubernetes](https://doc.dataiku.com/dss/latest/user-isolation/capabilities/kubernetes.html) dataiku documentation.
+
+Spark executors CPU limit is set by `spark.kubernetes.executor.limit.cores`. The CPU request is set by `spark.executor.cores`. The memory request and limit are set by summing the values of `spark.executor.memory` and `spark.executor.memoryOverhead`. 
+```
+spark_executionconfigs:
+  - name: SparkOnKubernetes
+    description: Execute Spark jobs in a Kuberntes cluster.
+    conf:
+      - key: spark.master
+        value: k8s://https://IP_OF_YOUR_K8S_CLUSTER
+        isFinal: false
+        secret: false
+      - key: spark.executor.memory
+        value: 4g
+        isFinal: false
+        secret: false
+      - key: spark.executor.memoryOverhead
+        value: 8g
+        isFinal: false
+        secret: false
+      - key: spark.executor.instances
+        value: 4
+        isFinal: false
+        secret: false
+      - key: spark.executor.cores
+        value: 2
+        isFinal: false
+        secret: false
+      - key: spark.kubernetes.executor.limit.cores
+        value: 4
+        isFinal: false
+        secret: false
+      - key: spark.sql.shuffle.partitions
+        value: 40
+        isFinal: false
+        secret: false
+      - key: spark.port.maxRetries
+        value: 200
+        isFinal: false
+        secret: false
     kubernetesSettings:
       managedKubernetes: true
       managedNamespace: testnamespace
