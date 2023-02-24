@@ -5,7 +5,7 @@ galaxy_info:
   description: Role automating Dataiku DSS deployment
 
   license: GPL-2.0-or-later
-  min_ansible_version: '5.8'
+  min_ansible_version: 5.8
 
   platforms:
   - name: Debian
@@ -13,14 +13,12 @@ galaxy_info:
     - buster
   - name: EL
     versions:
-    - '7'
-    - '8'
+    - 7
+    - 8
 
   galaxy_tags:
     - dataiku
     - dss
 
 dependencies:
-  - name: dataiku.dataiku-ansible-modules
-    src: git+https://github.com/dataiku/dataiku-ansible-modules.git
-    version: master
+  - dataiku.dataiku-ansible-modules
