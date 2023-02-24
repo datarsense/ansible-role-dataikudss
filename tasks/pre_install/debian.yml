@@ -81,6 +81,7 @@
   when: ansible_facts['os_family'] == 'Ubuntu' and ansible_facts ['distribution_major_version'] == '20.04'
 
 - name: Set Python 3.7 as the default python interpreter for Debian 10 and Ubuntu 20.04
+  become: true
   community.general.alternatives:
     name: python
     path: /usr/bin/python3.7
