@@ -147,6 +147,51 @@
     mode: '644'
   tags: [dss]
 
+- name: Tune DSS backend memory settings
+  become: true
+  become_user: "{{ dss_service_user }}"
+  community.general.ini_file:
+    path : "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/install.ini"
+    backup: true
+    section : javaopts
+    option: backend.xmx
+    value: "{{ dss_backend_xmx }}"
+  when: dss_backend_xmx is defined
+  notify:
+    - Regenerate DSS config
+    - Restart DSS
+  tags: [dss]
+
+- name: Tune DSS JEK memory settings
+  become: true
+  become_user: "{{ dss_service_user }}"
+  community.general.ini_file:
+    path : "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/install.ini"
+    backup: true
+    section : javaopts
+    option: jek.xmx
+    value: "{{ dss_jek_xmx }}"
+  when: dss_jek_xmx is defined
+  notify:
+    - Regenerate DSS config
+    - Restart DSS
+  tags: [dss]
+
+- name: Tune DSS FEK memory settings
+  become: true
+  become_user: "{{ dss_service_user }}"
+  community.general.ini_file:
+    path : "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/install.ini"
+    backup: true
+    section : javaopts
+    option: fek.xmx
+    value: "{{ dss_fek_xmx }}"
+  when: dss_fek_xmx is defined
+  notify:
+    - Regenerate DSS config
+    - Restart DSS
+  tags: [dss]
+
 - name: Install boot service
   become: true
   ansible.builtin.command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/scripts/install/install-boot.sh -n {{ dss_datadir }} {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }} dataiku"

@@ -36,6 +36,20 @@ Role Variables
 |dss_datadir | dss_data | Name of the DSS data directory|
 |dss_network_port | 10000 | DSS network port |
 
+### Optional variables for tuning memory settings
+As decribed in https://doc.dataiku.com/dss/latest/operations/memory.html, memory allocation of DSS components can be tuned :
+ - The **backend** is a Java process that has a fixed memory allocation set by the `dss_backend_xmx` parameter. Backend memory requirement scales with the number of users, the number of projects, datasets, recipes, … For large production instances, allocating 12 to 20 GB of memory for the backend is recommended by Dataiku.
+ - Each job in DSS runs in a separate process called a **JEK**. If you have 10 jobs running at a given time, there will be 10 running JEKs. The **default Xmx of the JEK is 2g**. This is enough for a large majority of jobs. However, some jobs with large number of partitions or large number of files to process may require more. This is configured by the `dss_jek_xmx` ini parameter.
+- From time to time, the DSS backend will “delegate” part of its work to worker processes called the **FEKs**. This is done mostly for work that may consume huge amounts of memory. If a memory overrun happens, the FEK gets killed but the backend is unaffected. **The default Xmx of each FEK is 2g. This is enough for a large majority of tasks.** There may be some rare cases where you’ll need to allocate more memorry (**generally at the direction of Dataiku Support**). This is configured by the `dss_fek_xmx` ini parameter.
+
+| Variable | Sample value |
+|----------|-------------|
+|dss_backend_xmx| 8g |
+|dss_jek_xmx| 2g |
+|dss_fek_xmx| 2g |
+
+Default values are applied by DSS installer for memory parameter not configured as a variable in the ansible playbook using this role.
+
 ### Optional variables for enabling containerized execution on kubernetes
 | Variable | Default value |
 |----------|-------------|

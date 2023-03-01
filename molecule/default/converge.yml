@@ -2,6 +2,9 @@
 - name: Converge
   hosts: all
   vars:
+    dss_backend_xmx: 2g
+    dss_jek_xmx: 2g
+    dss_fek_xmx: 2g
     configure_ldap_settings: "true"
     configure_spark: true
     spark_executionconfigs:
