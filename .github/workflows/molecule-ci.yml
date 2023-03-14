@@ -6,10 +6,13 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip setuptools
-          python3 -m pip install --upgrade ansible==6.7.0 yamllint ansible-lint
+          python3 -m pip install --upgrade ansible==5.9.0 yamllint ansible-lint
       - name: Ansible Lint
         run: |
           ansible-galaxy install -r requirements.yml
@@ -30,6 +33,14 @@ jobs:
           root-reserve-mb: 4096
           swap-size-mb: 1024
           remove-dotnet: 'true'
+      - name: Patch Docker Daemon data-root
+        run: |
+          DOCKER_DATA_ROOT='/home/runner/work/ansible-role-dataikudss/ansible-role-dataikudss/docker'
+          DOCKER_DAEMON_JSON='/etc/docker/daemon.json'
+          sudo mkdir -p "${DOCKER_DATA_ROOT}"
+          jq --arg dataroot "${DOCKER_DATA_ROOT}" '. + {"data-root": $dataroot}' "${DOCKER_DAEMON_JSON}" > "/tmp/docker.json.tmp"
+          sudo mv "/tmp/docker.json.tmp" "${DOCKER_DAEMON_JSON}"
+          sudo systemctl restart docker
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install dependencies
