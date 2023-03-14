@@ -24,7 +24,14 @@ jobs:
       # The maximum number of jobs that can run simultaneously
       max-parallel: 1
     steps:
-      - uses: actions/checkout@v2
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@v6
+        with:
+          root-reserve-mb: 1024
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip setuptools
