@@ -9,7 +9,7 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip setuptools
-          python3 -m pip install --upgrade ansible==5.9.0 yamllint ansible-lint
+          python3 -m pip install --upgrade ansible==6.7.0 yamllint ansible-lint
       - name: Ansible Lint
         run: |
           ansible-galaxy install -r requirements.yml
