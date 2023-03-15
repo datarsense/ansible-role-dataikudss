@@ -30,4 +30,4 @@
   tags: [docker-images]
 
 - ansible.buitin.debug:
-    msg: "{{loaded_images.stdout}}"
+    msg: "{{ loaded_images.stdout }}"
