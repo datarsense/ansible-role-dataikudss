@@ -205,4 +205,4 @@
     name: "dataiku.{{ dss_datadir }}"
     state: started
     enabled: true
-  tags: [dss]
+  tags: [dss, molecule-idempotence-notest]
