@@ -28,3 +28,6 @@
   register: loaded_images
   when: download_dss_docker_images and (result_test_docker_images.images | length < 3)
   tags: [docker-images]
+
+- ansible.buitin.debug:
+    msg: "{{loaded_images.stdout}}"
