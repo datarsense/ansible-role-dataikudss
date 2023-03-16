@@ -15,9 +15,9 @@
   ansible.builtin.service_facts:
 
 - name: Check if docker service is installed
- ansible.builtin.fail:
-   msg: Docker service has to be installed to make this role able to build images for code environments when containerized execution is enabled.
- when: (configure_k8s) and (('docker' not in services) or ('docker.service' not in services))
+  ansible.builtin.fail:
+    msg: Docker service has to be installed to make this role able to build images for code environments when containerized execution is enabled.
+  when: (configure_k8s) and (('docker' not in services) or ('docker.service' not in services))
 
 # Run role tasks
 - name: PREPARE SERVER BEFORE DSS INSTALL
