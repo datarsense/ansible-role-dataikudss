@@ -1,6 +1,7 @@
 ---
 - name: Converge
   hosts: all
+  become: true
   vars:
     dss_backend_xmx: 2g
     dss_jek_xmx: 2g
@@ -97,12 +98,14 @@
       when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
     - name: "Deploy docker"
       ansible.builtin.include_role:
-        name: weareinteractive.docker
+        name: geerlingguy.docker
       vars:
         docker_service_enabled: false
         docker_service_state: stopped
       tags: [molecule-idempotence-notest]
-      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+    - name: "Deploy docker python library"
+      ansible.builtin.include_role:
+        name: geerlingguy.pip
     - name: "Test DSS install"
       ansible.builtin.include_role:
         name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
