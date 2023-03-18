@@ -88,7 +88,7 @@
       until: "'running' in systemctl_status.stdout"
       retries: 30
       delay: 5
-      when: ansible_service_mgr == 'systemd'
+      when: ansible_service_mgr == 'systemd' and ansible_facts['os_family'] == 'RedHat' and ansible_facts ['distribution_major_version'] == '8'
       changed_when: false
   tasks:
     - name: "Update Repository cache and install gnupg (required by apt-key)"
