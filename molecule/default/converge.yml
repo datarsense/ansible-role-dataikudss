@@ -83,7 +83,7 @@
   # https://www.jeffgeerling.com/blog/2020/resolving-fedora-dnf-error-no-such-file-or-directory-varlibdnfrpmdblockpid
   pre_tasks:
     - name: Wait for systemd to complete initialization.  # noqa 303
-      command: systemctl is-system-running
+      ansible.builtin.command: systemctl is-system-running
       register: systemctl_status
       until: >
         'running' in systemctl_status.stdout or
@@ -114,10 +114,11 @@
       vars:
         docker_service_enabled: false
         docker_service_state: stopped
-      tags: [molecule-idempotence-notest]
+      tags: [docker-images, molecule-idempotence-notest]
     - name: "Deploy docker python library"
       ansible.builtin.include_role:
         name: geerlingguy.pip
+      tags: [docker-images]
     - name: "Test DSS install"
       ansible.builtin.include_role:
         name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"

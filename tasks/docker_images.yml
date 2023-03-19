@@ -11,6 +11,11 @@
   when: download_dss_docker_images 
   tags: [docker-images]
 
+- name: Print already registered DSS docker images
+  ansible.builtin.debug:
+    msg: "{{ (result_test_docker_images.images | length) < 3 }}"
+  tags: [docker-images]
+
 - name: Download base images archive provided by Dataiku
   become: true
   become_user: "{{ dss_service_user }}"
@@ -19,13 +24,14 @@
     dest: "{{ dss_install_dir_location }}/dataiku-dss-ALL-base_dss-{{ dss_version }}-r-py3.6.tar.gz"
     mode: '644'
   register: downloaded_images_archive
-  when: download_dss_docker_images and (result_test_docker_images.images | length < 3)
+  when: download_dss_docker_images and ((result_test_docker_images.images | length) < 3)
   tags: [docker-images]
 
 - name: Load all base images from archive
   become: true
   community.docker.docker_image_load:
     path: "{{ dss_install_dir_location }}/dataiku-dss-ALL-base_dss-{{ dss_version }}-r-py3.6.tar.gz"
+    timeout: 120
   register: loaded_images
-  when: downloaded_images_archive.changed
+  when: download_dss_docker_images and ((result_test_docker_images.images | length) < 3)
   tags: [docker-images]
