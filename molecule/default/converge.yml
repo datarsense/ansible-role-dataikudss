@@ -93,21 +93,6 @@
       when: ansible_service_mgr == 'systemd'
       changed_when: false
       failed_when: systemctl_status.rc > 1
-  tasks:
-    - name: "Update Repository cache and install gnupg (required by apt-key)"
-      ansible.builtin.apt:
-        name: "{{ packages }}"
-        state: present
-        update_cache: true
-      vars:
-        packages:
-          - gnupg
-          - python3.7
-          - python3-distutils
-          - python3-pip
-          - python3-selinux
-          - python3-setuptools
-      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
     - name: "Deploy docker"
       ansible.builtin.include_role:
         name: geerlingguy.docker
@@ -119,6 +104,7 @@
       ansible.builtin.include_role:
         name: geerlingguy.pip
       tags: [docker-images]
+  tasks:
     - name: "Test DSS install"
       ansible.builtin.include_role:
         name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
