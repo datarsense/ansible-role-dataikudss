@@ -21,6 +21,8 @@ dss_network_port: 10000
 # Optional : add containerized execution on kubernetes capability
 configure_k8s: false
 k8s_executionconfigs: []
+download_dss_docker_images: false
+download_dss_docker_images_url: "{{ dss_base_repository_url }}/{{ dss_version }}/container-images/dataiku-dss-ALL-base_dss-{{ dss_version }}-r-py3.6.tar.gz"
 
 # Optional : add dss spark support
 configure_spark: true

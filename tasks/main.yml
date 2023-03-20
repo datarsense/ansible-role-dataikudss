@@ -5,6 +5,20 @@
     msg: Hadoop or Spark package version does not match DSS version {{ dss_version }}
   when: (configure_spark) and (dss_hadoop_package is not search(dss_version) or dss_spark_package is not search(dss_version))
 
+- name: Check docker images URL version consistency
+  ansible.builtin.fail:
+    msg: Docker images URL {{ download_dss_docker_images_url }} does not match DSS version {{ dss_version }}
+  when: (download_dss_docker_images) and (download_dss_docker_images_url is not search(dss_version))
+
+# Check if docker service is installed if docker images have to be downloaded
+- name: Populate service facts
+  ansible.builtin.service_facts:
+
+- name: Check if docker service is installed
+  ansible.builtin.fail:
+    msg: Docker service has to be installed to make this role able to build images for code environments when containerized execution is enabled.
+  when: (configure_k8s) and ('docker' not in services) and ('docker.service' not in services)
+
 # Run role tasks
 - name: PREPARE SERVER BEFORE DSS INSTALL
   ansible.builtin.import_tasks: pre_install.yml
@@ -14,3 +28,6 @@
 
 - name: CONGIGURE DSS
   ansible.builtin.import_tasks: config.yml
+
+- name: DOWNLOAD AND LOAD DOCKER_IMAGES
+  ansible.builtin.import_tasks: docker_images.yml

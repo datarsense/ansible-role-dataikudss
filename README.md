@@ -55,8 +55,13 @@ Default values are applied by DSS installer for memory parameter not configured 
 |----------|-------------|
 |configure_k8s| false |
 |k8s_executionconfigs| [] |
+|download_dss_docker_images| false |
+|download_dss_docker_images_url| `{{ dss_base_repository_url }}/{{ dss_version }}/container-images/dataiku-dss-ALL-base_dss-{{ dss_version }}-r-py3.6.tar.gz` |
+
 
 The **k8s_executionconfigs** is an array which **can contain multiple containerized execution configurations** to match different business scenarios. Different kubernetes quotas can be allowed depending on user permissions, cuda ressources access can be limited to the data-scientist group, several base image can be offered to match business needs, ... 
+
+DSS docker bases images can be automatically downloaded as an archive from a web URL by configuring `download_dss_docker_images: true`. The `download_dss_docker_images_url` download URL is configured to use the Dataiku public CDN by default, but can be changed if needed. **DSS version must be set in the docker archive file name to make this role able to check consistency between DSS version and DSS docker images version**
 
 A configuration example is provided below with **two kubernetes execution configs**. Please make sure to replace sample **repositoryURL**, **baseImage**, and set a valid kubernetes namespace when using this sample.
 ```
@@ -65,6 +70,7 @@ A configuration example is provided below with **two kubernetes execution config
         name: "datarsense.dataikudss"
       vars:
         dss_version: "11.1.1"
+        download_dss_docker_images: true
         [...]
         configure_k8s: true
         k8s_executionconfigs:
@@ -454,6 +460,7 @@ Sample DSS deployment playbook
               dockerTLSVerify: false
         
         configure_k8s: true
+        download_dss_docker_images: true
         k8s_executionconfigs:
           - name: test1
             type: KUBERNETES

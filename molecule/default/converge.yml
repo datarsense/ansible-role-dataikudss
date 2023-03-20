@@ -21,6 +21,7 @@
           prePushMode: NONE
           dockerTLSVerify: false
     configure_k8s: true
+    download_dss_docker_images: true
     k8s_executionconfigs:
       - name: test1
         type: KUBERNETES
@@ -79,6 +80,44 @@
         ruleFrom: .*
         targetUnix: unix-userB
         targetHadoop: hadoop-userB
+  # https://www.jeffgeerling.com/blog/2020/resolving-fedora-dnf-error-no-such-file-or-directory-varlibdnfrpmdblockpid
+  pre_tasks:
+    - name: Wait for systemd to complete initialization.  # noqa 303
+      ansible.builtin.command: systemctl is-system-running
+      register: systemctl_status
+      until: >
+        'running' in systemctl_status.stdout or
+        'degraded' in systemctl_status.stdout
+      retries: 30
+      delay: 5
+      when: ansible_service_mgr == 'systemd'
+      changed_when: false
+      failed_when: systemctl_status.rc > 1
+    - name: "Update Repository cache and install gnupg (required by apt-key)"
+      ansible.builtin.apt:
+        name: "{{ packages }}"
+        state: present
+        update_cache: true
+      vars:
+        packages:
+          - gnupg
+          - python3.7
+          - python3-distutils
+          - python3-pip
+          - python3-selinux
+          - python3-setuptools
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+    - name: "Deploy docker"
+      ansible.builtin.include_role:
+        name: geerlingguy.docker
+      vars:
+        docker_service_enabled: false
+        docker_service_state: stopped
+      tags: [docker-images, molecule-idempotence-notest]
+    - name: "Deploy docker python library"
+      ansible.builtin.include_role:
+        name: geerlingguy.pip
+      tags: [docker-images]
   tasks:
     - name: "Test DSS install"
       ansible.builtin.include_role:
