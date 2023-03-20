@@ -30,9 +30,10 @@
         groupNameAttribute: "{{ ldap_groupnameattribute }}"
         groupProfiles: "{{ ldap_groupprofiles }}"
         authorizedGroups: "{{ ldap_authorizedgroups }}"
-  register: ldapSettings
-  changed_when: "'MODIFIED' in ldapSettings.message"
-  failed_when: ("'FAILED' in command_result.stderr") and ("'Your license does not allow you to enable LDAP authentication' in command_result.stderr")
+  register: ldap_settings
+  changed_when: "'MODIFIED' in ldap_settings.message"
+  failed_when: ldap_settings.failed and ("'Your license does not allow you to enable LDAP authentication' not in ldap_settings.msg")
+  ignore_errors: yes
   tags: [dss-config]
 
 - name: Configure containerized execution on Kubernetes in DSS settings
@@ -42,8 +43,8 @@
     settings:
       containerSettings:
         executionConfigs: "{{ k8s_executionconfigs }}"
-  register: containerSettings
-  changed_when: "'MODIFIED' in containerSettings.message"
+  register: container_settings
+  changed_when: "'MODIFIED' in container_settings.message"
   tags: [dss-config]
 
 - name: Enable spark support in DSS settings
@@ -54,8 +55,8 @@
       sparkSettings:
         sparkEnabled: true
         executionConfigs: "{{ spark_executionconfigs }}"
-  register: sparkSettings
-  changed_when: "'MODIFIED' in sparkSettings.message"
+  register: spark_settings
+  changed_when: "'MODIFIED' in spark_settings.message"
   tags: [dss-config]
 
 - name: Configure UIF user mappings
@@ -65,8 +66,8 @@
     settings:
       impersonation:
         userRules: "{{ uif_userrules }}"
-  register: impersonationUserSettings
-  changed_when: "'MODIFIED' in impersonationUserSettings.message"
+  register: impersonation_user_settings
+  changed_when: "'MODIFIED' in impersonation_user_settings.message"
   tags: [dss-config]
 
 - name: Configure UIF group mappings
@@ -76,6 +77,6 @@
     settings:
       impersonation:
         groupRules: "{{ uif_grouprules }}"
-  register: impersonationGroupSettings
-  changed_when: "'MODIFIED' in impersonationGroupSettings.message"
+  register: impersonation_group_settings
+  changed_when: "'MODIFIED' in impersonation_group_settings.message"
   tags: [dss-config]
