@@ -30,8 +30,10 @@
         groupNameAttribute: "{{ ldap_groupnameattribute }}"
         groupProfiles: "{{ ldap_groupprofiles }}"
         authorizedGroups: "{{ ldap_authorizedgroups }}"
-  ignore_errors: yes
-  tags: [dss-config, molecule-idempotence-notest]
+  register: ldapSettings
+  changed_when: "'MODIFIED' in ldapSettings.message"
+  failed_when: ("'FAILED' in command_result.stderr") and ("'Your license does not allow you to enable LDAP authentication' in command_result.stderr")
+  tags: [dss-config]
 
 - name: Configure containerized execution on Kubernetes in DSS settings
   when: configure_k8s
@@ -40,7 +42,9 @@
     settings:
       containerSettings:
         executionConfigs: "{{ k8s_executionconfigs }}"
-  tags: [dss-config, molecule-idempotence-notest]
+  register: containerSettings
+  changed_when: "'MODIFIED' in containerSettings.message"
+  tags: [dss-config]
 
 - name: Enable spark support in DSS settings
   when: configure_spark
@@ -50,7 +54,9 @@
       sparkSettings:
         sparkEnabled: true
         executionConfigs: "{{ spark_executionconfigs }}"
-  tags: [dss-config, molecule-idempotence-notest]
+  register: sparkSettings
+  changed_when: "'MODIFIED' in sparkSettings.message"
+  tags: [dss-config]
 
 - name: Configure UIF user mappings
   when: configure_uif
@@ -59,7 +65,9 @@
     settings:
       impersonation:
         userRules: "{{ uif_userrules }}"
-  tags: [dss-config, molecule-idempotence-notest]
+  register: impersonationUserSettings
+  changed_when: "'MODIFIED' in impersonationUserSettings.message"
+  tags: [dss-config]
 
 - name: Configure UIF group mappings
   when: configure_uif
@@ -68,4 +76,6 @@
     settings:
       impersonation:
         groupRules: "{{ uif_grouprules }}"
-  tags: [dss-config, molecule-idempotence-notest]
+  register: impersonationGroupSettings
+  changed_when: "'MODIFIED' in impersonationGroupSettings.message"
+  tags: [dss-config
