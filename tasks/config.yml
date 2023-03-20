@@ -78,4 +78,4 @@
         groupRules: "{{ uif_grouprules }}"
   register: impersonationGroupSettings
   changed_when: "'MODIFIED' in impersonationGroupSettings.message"
-  tags: [dss-config
+  tags: [dss-config]
