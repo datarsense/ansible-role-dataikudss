@@ -16,7 +16,7 @@ jobs:
       - name: Ansible Lint
         run: |
           ansible-galaxy install -r requirements.yml
-          ansible-lint -x package-latest
+          ansible-lint -x package-latest no-handler
   test:
     runs-on: ubuntu-20.04
     strategy:

@@ -43,6 +43,7 @@
   args:
     creates: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/dss-version.json"
   register: dss_install
+  changed_when: "'Installation complete' in dss_install.stdout"
   tags: [dss]
 
 - name: Read dss-version.json file
@@ -74,11 +75,12 @@
         state: stopped
 
     - name: Run the Dataiku DSS installer to upgrade the DSS instance
+      when: current_dss_version is version(dss_version,  operator='lt', strict=True)
       become: true
       become_user: "{{ dss_service_user }}"
       ansible.builtin.command: "{{ dss_install_dir_location }}/dataiku-dss-{{ dss_version }}/installer.sh -u -y -d {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}"
-      when: current_dss_version is version(dss_version,  operator='lt', strict=True)
       register: dss_upgrade
+      changed_when: "'Installation complete' in dss_upgrade.stdout"
 
 - name: Download Hadoop package
   when: configure_spark and ((dss_install is defined and dss_install.changed) or (dss_upgrade is defined and dss_upgrade.changed))
@@ -95,6 +97,8 @@
   become: true
   become_user: "{{ dss_service_user }}"
   ansible.builtin.command: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/bin/dssadmin install-hadoop-integration -standaloneArchive {{ dss_install_dir_location }}/{{ dss_hadoop_package }}"
+  register: hadoop_install
+  changed_when: hadoop_install.rc == 0
   tags: [dss]
 
 - name: Download Spark package
@@ -112,6 +116,8 @@
   become: true
   become_user: "{{ dss_service_user }}"
   ansible.builtin.command: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/bin/dssadmin install-spark-integration -standaloneArchive {{ dss_install_dir_location }}/{{ dss_spark_package }}{{ ' -forK8S' if configure_k8s }}"
+  register: spark_install
+  changed_when: spark_install.rc == 0
   tags: [dss]
 
 - name: Activate UIF
@@ -151,11 +157,12 @@
   become: true
   become_user: "{{ dss_service_user }}"
   community.general.ini_file:
-    path : "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/install.ini"
+    path: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/install.ini"
     backup: true
-    section : javaopts
+    section: javaopts
     option: backend.xmx
     value: "{{ dss_backend_xmx }}"
+    mode: 0600
   when: dss_backend_xmx is defined
   notify:
     - Regenerate DSS config
@@ -166,11 +173,12 @@
   become: true
   become_user: "{{ dss_service_user }}"
   community.general.ini_file:
-    path : "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/install.ini"
+    path: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/install.ini"
     backup: true
-    section : javaopts
+    section: javaopts
     option: jek.xmx
     value: "{{ dss_jek_xmx }}"
+    mode: 0600
   when: dss_jek_xmx is defined
   notify:
     - Regenerate DSS config
@@ -181,11 +189,12 @@
   become: true
   become_user: "{{ dss_service_user }}"
   community.general.ini_file:
-    path : "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/install.ini"
+    path: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/install.ini"
     backup: true
-    section : javaopts
+    section: javaopts
     option: fek.xmx
     value: "{{ dss_fek_xmx }}"
+    mode: 0600
   when: dss_fek_xmx is defined
   notify:
     - Regenerate DSS config

@@ -30,6 +30,9 @@
         groupNameAttribute: "{{ ldap_groupnameattribute }}"
         groupProfiles: "{{ ldap_groupprofiles }}"
         authorizedGroups: "{{ ldap_authorizedgroups }}"
+  register: ldap_settings
+  changed_when: "'MODIFIED' in ldap_settings.message"
+  failed_when: ldap_settings.failed and ("'Your license does not allow you to enable LDAP authentication' not in ldap_settings.msg")
   ignore_errors: yes
   tags: [dss-config, molecule-idempotence-notest]
 
@@ -40,6 +43,8 @@
     settings:
       containerSettings:
         executionConfigs: "{{ k8s_executionconfigs }}"
+  register: container_settings
+  changed_when: "'MODIFIED' in container_settings.message"
   tags: [dss-config, molecule-idempotence-notest]
 
 - name: Enable spark support in DSS settings
@@ -50,6 +55,8 @@
       sparkSettings:
         sparkEnabled: true
         executionConfigs: "{{ spark_executionconfigs }}"
+  register: spark_settings
+  changed_when: "'MODIFIED' in spark_settings.message"
   tags: [dss-config, molecule-idempotence-notest]
 
 - name: Configure UIF user mappings
@@ -59,6 +66,8 @@
     settings:
       impersonation:
         userRules: "{{ uif_userrules }}"
+  register: impersonation_user_settings
+  changed_when: "'MODIFIED' in impersonation_user_settings.message"
   tags: [dss-config, molecule-idempotence-notest]
 
 - name: Configure UIF group mappings
@@ -68,4 +77,6 @@
     settings:
       impersonation:
         groupRules: "{{ uif_grouprules }}"
+  register: impersonation_group_settings
+  changed_when: "'MODIFIED' in impersonation_group_settings.message"
   tags: [dss-config, molecule-idempotence-notest]
