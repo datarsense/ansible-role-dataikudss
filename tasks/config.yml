@@ -9,33 +9,6 @@
   register: dss_connection_info
   tags: [dss-config]
 
-- name: Configure LDAP settings
-  when: configure_ldap_settings|bool
-  dss_general_settings:
-    connect_to: "{{ dss_connection_info }}"
-    settings:
-      ldapSettings:
-        enabled: true
-        url: "{{ ldap_url }}"
-        bindDN: "{{ ldap_binddn }}"
-        bindPassword: "{{ ldap_bindpassword }}"
-        useTls: "{{ ldap_usetls }}"
-        autoImportUsers: "{{ ldap_autoimportusers }}"
-        userFilter: "{{ ldap_userfilter }}"
-        defaultUserProfile: "{{ ldap_defaultuserprofile }}"
-        displayNameAttribute: "{{ ldap_displaynameattribute }}"
-        emailAttribute: "{{ ldap_emailattribute }}"
-        enableGroups: "{{ ldap_enablegroups }}"
-        groupFilter: "{{ ldap_groupfilter }}"
-        groupNameAttribute: "{{ ldap_groupnameattribute }}"
-        groupProfiles: "{{ ldap_groupprofiles }}"
-        authorizedGroups: "{{ ldap_authorizedgroups }}"
-  register: ldap_settings
-  changed_when: "'MODIFIED' in ldap_settings.message"
-  failed_when: ldap_settings.failed and ("'Your license does not allow you to enable LDAP authentication' not in ldap_settings.msg")
-  ignore_errors: yes
-  tags: [dss-config, molecule-idempotence-notest]
-
 - name: Configure containerized execution on Kubernetes in DSS settings
   when: configure_k8s
   dss_general_settings:

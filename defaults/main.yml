@@ -108,24 +108,14 @@ spark_executionconfigs:
         isFinal: false
         secret: false  
 
-# Optional : add LDAP login capability
+# Optional : Activate LDAP authentication
 configure_ldap_settings: "false"
-ldap_url: "ldap://ldap.internal.example.com/dc=example,dc=com"
-ldap_binddn: "uid=readonly,ou=users,dc=example,dc=com"
-ldap_bindpassword: ""
-ldap_usetls: true
-ldap_autoimportusers: true
-ldap_userfilter: "(&(objectClass=posixAccount)(uid={USERNAME}))"
-ldap_defaultuserprofile: "READER"
-ldap_displaynameattribute: "cn"
-ldap_emailattribute: "mail"
-ldap_enablegroups: true
-ldap_groupfilter: "(&(objectClass=posixGroup)(memberUid={USERDN}))"
-ldap_groupnameattribute: "cn"
-ldap_groupprofiles: []
-ldap_authorizedgroups: "dss-users"
 
-# Optional : activate User Isolation Framework (UIF)
+# Optional : OpenID Connect (OIDC) Single Sign-On authentication
+configure_oidc_sso: false
+oidc_scope: 'openid email'
+
+# Optional : Activate User Isolation Framework (UIF)
 configure_uif: false
 uif_users: {}
 uif_userrules: []
