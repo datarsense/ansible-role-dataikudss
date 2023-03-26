@@ -97,4 +97,4 @@
   register: selinuxdisabled
   notify:
     - Reboot server
-  tags: [setup, molecule-notest]
+  tags: [setup]

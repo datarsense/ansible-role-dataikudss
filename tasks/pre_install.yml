@@ -18,6 +18,7 @@
 
 - name: Flush handlers to reboot after disabling SELinux if needed
   ansible.builtin.meta: flush_handlers
+  tags: [molecule-notest]
 
 - name: Increase system limits as required by DSS
   become: true

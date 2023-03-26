@@ -4,7 +4,7 @@
 - name: Reboot server
   become: true
   ansible.builtin.reboot:
-  tags: [setup]
+  tags: [setup, molecule-notest]
 
 - name: Regenerate DSS config
   become: true
