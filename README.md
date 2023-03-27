@@ -279,7 +279,7 @@ spark_executionconfigs:
 ### Optional variables for enabling LDAP authentication
 | Variable | Default value |
 |----------|-------------|
-|configure_ldap_settings:| "false" |
+|configure_ldap_settings| false |
 |ldap_url| "ldap://ldap.internal.example.com/dc=example,dc=com"|
 |ldap_binddn| "uid=readonly,ou=users,dc=example,dc=com"
 |ldap_bindpassword: "" |
@@ -395,7 +395,7 @@ Sample DSS deployment playbook
         dss_hadoop_package: "dataiku-dss-hadoop-standalone-libs-generic-hadoop3-11.1.1.tar.gz"
         dss_spark_package: "dataiku-dss-spark-standalone-11.1.1-3.2.1-generic-hadoop3.tar.gz"
 
-        configure_ldap_settings: "true"
+        configure_ldap_settings: true
         ldap_url: "ldap://ldap.internal.example.com/dc=example,dc=com"
         ldap_binddn: "uid=readonly,ou=users,dc=example,dc=com"
         ldap_bindpassword: ""

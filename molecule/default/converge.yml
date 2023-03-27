@@ -7,7 +7,7 @@
     dss_jek_xmx: 2g
     dss_fek_xmx: 2g
     
-    configure_ldap_settings: "true"
+    configure_ldap_settings: true
     ldap_url: "ldap://ldap.internal.example.com/dc=example,dc=com"
     ldap_binddn: "uid=readonly,ou=users,dc=example,dc=com"
     ldap_bindpassword: ""

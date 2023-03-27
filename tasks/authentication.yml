@@ -1,5 +1,5 @@
 - name: Configure LDAP settings
-  when: configure_ldap_settings|bool
+  when: configure_ldap_settings
   dss_general_settings:
     connect_to: "{{ dss_connection_info }}"
     settings:

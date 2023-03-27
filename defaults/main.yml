@@ -109,7 +109,7 @@ spark_executionconfigs:
         secret: false  
 
 # Optional : Activate LDAP authentication
-configure_ldap_settings: "false"
+configure_ldap_settings: false
 
 # Optional : OpenID Connect (OIDC) Single Sign-On authentication
 configure_oidc_sso: false
