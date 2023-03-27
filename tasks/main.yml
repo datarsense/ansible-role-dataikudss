@@ -29,5 +29,9 @@
 - name: CONGIGURE DSS
   ansible.builtin.import_tasks: config.yml
 
+- name: CONGIGURE AUTHENTICATION
+  ansible.builtin.import_tasks: authentication.yml
+  tags: [dss-authentication]
+
 - name: DOWNLOAD AND LOAD DOCKER_IMAGES
   ansible.builtin.import_tasks: docker_images.yml

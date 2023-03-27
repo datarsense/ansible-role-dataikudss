@@ -2,10 +2,37 @@
 - name: Converge
   hosts: all
   vars:
+    skip_handlers: true
     dss_backend_xmx: 2g
     dss_jek_xmx: 2g
     dss_fek_xmx: 2g
-    configure_ldap_settings: "true"
+    
+    configure_ldap_settings: true
+    ldap_url: "ldap://ldap.internal.example.com/dc=example,dc=com"
+    ldap_binddn: "uid=readonly,ou=users,dc=example,dc=com"
+    ldap_bindpassword: ""
+    ldap_usetls: true
+    ldap_autoimportusers: true
+    ldap_userfilter: "(&(objectClass=posixAccount)(uid={USERNAME}))"
+    ldap_defaultuserprofile: "READER"
+    ldap_displaynameattribute: "cn"
+    ldap_emailattribute: "mail"
+    ldap_enablegroups: true
+    ldap_groupfilter: "(&(objectClass=posixGroup)(memberUid={USERDN}))"
+    ldap_groupnameattribute: "cn"
+    ldap_groupprofiles: []
+    ldap_authorizedgroups: "dss-users"
+
+    configure_oidc_sso: true
+    oidc_clientid: test
+    oidc_clientsecret: test
+    oidc_scope: 'openid profile email'
+    oidc_issuer: https://accounts.google.com
+    oidc_authorizationendpoint: https://accounts.google.com/o/oauth2/v2/auth
+    oidc_tokenendpoint: https://oauth2.googleapis.com/token
+    oidc_jwksuri: https://www.googleapis.com/oauth2/v3/certs
+    oidc_claimkeyidentifier: email_verified
+
     configure_spark: true
     spark_executionconfigs:
       - name": SparkOnKubernetes

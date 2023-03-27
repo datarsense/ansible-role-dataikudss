@@ -4,7 +4,7 @@
 - name: Reboot server
   become: true
   ansible.builtin.reboot:
-  tags: [setup]
+  when: (skip_handlers is undefined) or (not skip_handlers)
 
 - name: Regenerate DSS config
   become: true
@@ -16,3 +16,4 @@
   ansible.builtin.service:
     name: "dataiku.{{ dss_datadir }}"
     state: restarted
+  when: (skip_handlers is undefined) or (not skip_handlers)
