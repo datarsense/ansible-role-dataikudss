@@ -2,6 +2,7 @@
 - name: Converge
   hosts: all
   vars:
+    skip_handlers: true
     dss_backend_xmx: 2g
     dss_jek_xmx: 2g
     dss_fek_xmx: 2g
