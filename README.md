@@ -280,6 +280,9 @@ spark_executionconfigs:
 | Variable | Default value |
 |----------|-------------|
 |configure_ldap_settings| false |
+
+| Variable | Sample value |
+|----------|-------------|
 |ldap_url| "ldap://ldap.internal.example.com/dc=example,dc=com"|
 |ldap_binddn| "uid=readonly,ou=users,dc=example,dc=com"
 |ldap_bindpassword: "" |
@@ -294,6 +297,27 @@ spark_executionconfigs:
 |ldap_groupnameattribute| "cn" |
 |ldap_groupprofiles| [] |
 |ldap_authorizedgroups| "dss-users" |
+
+### Optional variables for enabling OpenID Connect (OIDC) SSO authentication
+Configure `configure_oidc_sso: true` to enable OpenID Connect SSO.
+| Variable | Default value |
+|----------|-------------|
+|configure_oidc_sso| false |
+
+The following table shows an example of OIDC SSO configuration with Google IDP. Change the default values to match your IDP configuration.
+
+Remapping rules are not supported by this role.
+
+| Variable | Sample value |
+|----------|-------------|
+|oidc_clientid| test |
+|oidc_clientsecret| test |
+|oidc_scope| 'openid profile email' |
+|oidc_issuer| https://accounts.google.com |
+|oidc_authorizationendpoint| https://accounts.google.com/o/oauth2/v2/auth |
+|oidc_tokenendpoint| https://oauth2.googleapis.com/token |
+|oidc_jwksuri| https://www.googleapis.com/oauth2/v3/certs |
+|oidc_claimkeyidentifier| email_verified |
 
 
 ### Optional variables for enabling User Isolation Framework (UIF)
@@ -411,6 +435,16 @@ Sample DSS deployment playbook
         ldap_groupprofiles: []
         ldap_authorizedgroups: "dss-users"
         
+        configure_oidc_sso: true
+        oidc_clientid: test
+        oidc_clientsecret: test
+        oidc_scope: 'openid profile email'
+        oidc_issuer: https://accounts.google.com
+        oidc_authorizationendpoint: https://accounts.google.com/o/oauth2/v2/auth
+        oidc_tokenendpoint: https://oauth2.googleapis.com/token
+        oidc_jwksuri: https://www.googleapis.com/oauth2/v3/certs
+        oidc_claimkeyidentifier: email_verified
+
         configure_uif: true
         uif_users:
           userA:
