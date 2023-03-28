@@ -46,7 +46,7 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip setuptools
-          python3 -m pip install --upgrade ansible==5.9.0 ansible-lint>=5.1.2,<6.0.0 molecule molecule-docker jmespath dataiku-api-client==11.4.0
+          python3 -m pip install --upgrade ansible==5.9.0 ansible-lint<6.0.0 molecule molecule-docker jmespath dataiku-api-client==11.4.0
       - name: Write license file without logging its content
         run: 'echo "$LICENSE" > license.json'
         shell: bash
