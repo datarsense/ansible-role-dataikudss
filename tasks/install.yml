@@ -31,8 +31,12 @@
   become: true
   ansible.builtin.pip:
     name: "{{ dataiku_python_api_package }}"
+<<<<<<< HEAD
     version: "{{ dss_api_version }}"
     state: present
+=======
+    state: "{{ dss_api_version }}"
+>>>>>>> Switch to dataiku-api-client PIP package & to DSS v11.4.0 by default
     executable: pip3
     #state: forcereinstall # Useful when release/5.1 gets updated
   tags: [setup, dss-setup, dss-api]
