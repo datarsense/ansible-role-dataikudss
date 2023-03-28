@@ -31,7 +31,7 @@
   become: true
   ansible.builtin.pip:
     name: "{{ dataiku_python_api_package }}"
-    state: latest
+    state: "{{ dss_api_version }}"
     executable: pip3
     #state: forcereinstall # Useful when release/5.1 gets updated
   tags: [setup, dss-setup, dss-api]
