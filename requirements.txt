@@ -1,2 +1,3 @@
 ansible>=5.8
 jmespath
+dataiku-api-client=11.4.0
