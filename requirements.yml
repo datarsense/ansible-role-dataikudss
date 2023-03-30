@@ -2,6 +2,6 @@
 - src: git+https://github.com/dataiku/dataiku-api-client-python
   name: dataiku-api-client-python
   version: release/8.0
-- src: git+https://github.com/dataiku/dataiku-ansible-modules
-  name: dataiku.dataiku-ansible-modules
+- src: git+https://github.com/datarsense/dataiku-ansible-modules
+  name: datarsense.dataiku-ansible-modules
   version: master
