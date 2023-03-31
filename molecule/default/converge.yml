@@ -48,7 +48,6 @@
           prePushMode: NONE
           dockerTLSVerify: false
     configure_k8s: true
-    download_dss_docker_images: true
     k8s_executionconfigs:
       - name: test1
         type: KUBERNETES
@@ -160,3 +159,4 @@
         dss_version: "11.4.0"
         dss_hadoop_package: "dataiku-dss-hadoop-standalone-libs-generic-hadoop3-11.4.0.tar.gz"
         dss_spark_package: "dataiku-dss-spark-standalone-11.4.0-3.3.1-generic-hadoop3.tar.gz"
+        download_dss_docker_images: true
