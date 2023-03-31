@@ -11,11 +11,6 @@
   when: download_dss_docker_images 
   tags: [docker-images]
 
-- name: Print already registered DSS docker images
-  ansible.builtin.debug:
-    msg: "{{ result_test_docker_images.images }}"
-  tags: [docker-images]
-
 - name: Download base images archive provided by Dataiku
   become: true
   become_user: "{{ dss_service_user }}"
