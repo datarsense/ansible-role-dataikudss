@@ -7,7 +7,7 @@
 dss_base_repository_url: https://cdn.downloads.dataiku.com/public/studio
 dss_version: 11.4.0
 dataiku_python_api_package: dataiku-api-client
-dss_api_version: 11.4.0
+dss_api_version: 11.1.0
 dss_service_user: dataiku
 dss_service_user_shell: "/bin/bash"
 dss_service_user_home_basedir: /home
