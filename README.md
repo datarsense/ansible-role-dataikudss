@@ -44,7 +44,7 @@ The following ansible variables enable MySQL support in DSS :
 | Variable | Sample value | Usage |
 |----------|-------------|--------|
 |configure_mysql| false | Triggers if MySQL JDBC driver has to be deployed or not. Default is `false` | 
-|mysql_jdbc_connector_url| https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.33/mysql-connector-java-8.0.33.jar | URL of the MySQL JDBC connector JAR library | 
+|mysql_jdbc_connector_url| https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.31/mysql-connector-j-8.0.31.jar | URL of the MySQL JDBC connector JAR library | 
 
 
 ### Optional variables for tuning memory settings
