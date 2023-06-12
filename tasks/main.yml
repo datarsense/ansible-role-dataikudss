@@ -19,12 +19,21 @@
     msg: Docker service has to be installed to make this role able to build images for code environments when containerized execution is enabled.
   when: (configure_k8s) and ('docker' not in services) and ('docker.service' not in services)
 
+# Check if mysql_jdbc_connector_url is a JAR file
+- name: Check mysql_jdbc_connector_url downloaded file extension
+  ansible.builtin.fail:
+    msg: The mysql_jdbc_connector_url has to be configured to download a MySQL JDBC connector JAR library.
+  when: configure_mysql and (mysql_jdbc_connector_url is not defined or mysql_jdbc_connector_url is not search('jar'))
+
 # Run role tasks
 - name: PREPARE SERVER BEFORE DSS INSTALL
   ansible.builtin.import_tasks: pre_install.yml
 
 - name: INSTALL or UPGRADE DSS
   ansible.builtin.import_tasks: install.yml
+
+- name: INSTALL JDBC DRIVERS
+  ansible.builtin.import_tasks: install_jdbc_drivers.yml
 
 - name: CONGIGURE DSS
   ansible.builtin.import_tasks: config.yml

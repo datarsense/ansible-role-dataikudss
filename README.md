@@ -36,6 +36,17 @@ Role Variables
 |dss_datadir | dss_data | Name of the DSS data directory|
 |dss_network_port | 10000 | DSS network port |
 
+### Optional variables for deploying JDBC drivers
+DSS requires a third party JDBC connector JAR library provided by Oracle to be able to connect to MySQL databases.
+
+The following ansible variables enable MySQL support in DSS :
+
+| Variable | Sample value | Usage |
+|----------|-------------|--------|
+|configure_mysql| false | Triggers if MySQL JDBC driver has to be deployed or not. Default is `false` | 
+|mysql_jdbc_connector_url| https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.33/mysql-connector-java-8.0.33.jar | URL of the MySQL JDBC connector JAR library | 
+
+
 ### Optional variables for tuning memory settings
 As decribed in https://doc.dataiku.com/dss/latest/operations/memory.html, memory allocation of DSS components can be tuned :
  - The **backend** is a Java process that has a fixed memory allocation set by the `dss_backend_xmx` parameter. Backend memory requirement scales with the number of users, the number of projects, datasets, recipes, … For large production instances, allocating 12 to 20 GB of memory for the backend is recommended by Dataiku.
