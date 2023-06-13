@@ -16,6 +16,7 @@
   become_user: "{{ dss_service_user }}"
   ansible.builtin.get_url:
     url: "{{ download_dss_docker_images_url }}"
+    tmp_dest: "{{ download_dss_docker_images_url_tmp_dest if download_dss_docker_images_url_tmp_dest is defined else ansible_remote_tmp }}"
     dest: "{{ dss_install_dir_location }}/dataiku-dss-ALL-base_dss-{{ dss_version }}-r-py3.6.tar.gz"
     mode: '644'
   register: downloaded_images_archive
