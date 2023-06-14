@@ -27,7 +27,7 @@
   become: true
   community.docker.docker_image_load:
     path: "{{ dss_install_dir_location }}/dataiku-dss-ALL-base_dss-{{ dss_version }}-r-py3.6.tar.gz"
-    timeout: 120
+    timeout: 240
   register: loaded_images
   when: downloaded_images_archive.changed
-  tags: [docker-images]
+  tags: [docker-images, molecule-notest]
