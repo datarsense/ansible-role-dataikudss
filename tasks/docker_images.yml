@@ -18,8 +18,8 @@
     path: "{{ download_dss_docker_images_url_tmp_directory }}"
     state: directory
     mode: '0755'
- when: download_dss_docker_images and (download_dss_docker_images_url_tmp_directory is defined)
- tags: [docker-images]
+  when: download_dss_docker_images and (download_dss_docker_images_url_tmp_directory is defined)
+  tags: [docker-images]
 
 - name: Download base images archive provided by Dataiku
   become: true
