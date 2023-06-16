@@ -11,12 +11,22 @@
   when: download_dss_docker_images 
   tags: [docker-images]
 
+- name: Create temporary download directory if it does not exist
+  become: true
+  become_user: "{{ dss_service_user }}"
+  ansible.builtin.file:
+    path: "{{ download_dss_docker_images_url_tmp_directory }}"
+    state: directory
+    mode: '0755'
+ when: download_dss_docker_images and (download_dss_docker_images_url_tmp_directory is defined)
+ tags: [docker-images]
+
 - name: Download base images archive provided by Dataiku
   become: true
   become_user: "{{ dss_service_user }}"
   ansible.builtin.get_url:
     url: "{{ download_dss_docker_images_url }}"
-    tmp_dest: "{{ download_dss_docker_images_url_tmp_dest | default(omit) }}"
+    tmp_dest: "{{ download_dss_docker_images_url_tmp_directory | default(omit) }}"
     dest: "{{ dss_install_dir_location }}/dataiku-dss-ALL-base_dss-{{ dss_version }}-r-py3.6.tar.gz"
     mode: '644'
   register: downloaded_images_archive
