@@ -36,6 +36,17 @@ Role Variables
 |dss_datadir | dss_data | Name of the DSS data directory|
 |dss_network_port | 10000 | DSS network port |
 
+### Optional variables for deploying JDBC drivers
+DSS requires a third party JDBC connector JAR library provided by Oracle to be able to connect to MySQL databases.
+
+The following ansible variables enable MySQL support in DSS :
+
+| Variable | Sample value | Usage |
+|----------|-------------|--------|
+|configure_mysql| false | Triggers if MySQL JDBC driver has to be deployed or not. Default is `false` | 
+|mysql_jdbc_connector_url| https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.31/mysql-connector-j-8.0.31.jar | URL of the MySQL JDBC connector JAR library | 
+
+
 ### Optional variables for tuning memory settings
 As decribed in https://doc.dataiku.com/dss/latest/operations/memory.html, memory allocation of DSS components can be tuned :
  - The **backend** is a Java process that has a fixed memory allocation set by the `dss_backend_xmx` parameter. Backend memory requirement scales with the number of users, the number of projects, datasets, recipes, … For large production instances, allocating 12 to 20 GB of memory for the backend is recommended by Dataiku.
@@ -56,12 +67,13 @@ Default values are applied by DSS installer for memory parameter not configured 
 |configure_k8s| false |
 |k8s_executionconfigs| [] |
 |download_dss_docker_images| false |
+|download_dss_docker_images_url_tmp_directory | |
 |download_dss_docker_images_url| `{{ dss_base_repository_url }}/{{ dss_version }}/container-images/dataiku-dss-ALL-base_dss-{{ dss_version }}-r-py3.6.tar.gz` |
 
 
 The **k8s_executionconfigs** is an array which **can contain multiple containerized execution configurations** to match different business scenarios. Different kubernetes quotas can be allowed depending on user permissions, cuda ressources access can be limited to the data-scientist group, several base image can be offered to match business needs, ... 
 
-DSS docker bases images can be automatically downloaded as an archive from a web URL by configuring `download_dss_docker_images: true`. The `download_dss_docker_images_url` download URL is configured to use the Dataiku public CDN by default, but can be changed if needed. **DSS version must be set in the docker archive file name to make this role able to check consistency between DSS version and DSS docker images version**
+DSS docker bases images can be automatically downloaded as an archive from a web URL by configuring `download_dss_docker_images: true`. Use `download_dss_docker_images_url_tmp_directory: /local/tmp` to configure a custom ansible tmp directory if the  `/tmp`partition of the server is too small to download the 4.5G docker images archive. The `download_dss_docker_images_url` download URL is configured to use the Dataiku public CDN by default, but can be changed if needed. **DSS version must be set in the docker archive file name to make this role able to check consistency between DSS version and DSS docker images version**
 
 A configuration example is provided below with **two kubernetes execution configs**. Please make sure to replace sample **repositoryURL**, **baseImage**, and set a valid kubernetes namespace when using this sample.
 ```

@@ -18,6 +18,9 @@ dss_node_type: design
 dss_datadir: dss_data
 dss_network_port: 10000
 
+# Optional : add Mysql JDBC connector
+configure_mysql: false
+
 # Optional : add containerized execution on kubernetes capability
 configure_k8s: false
 k8s_executionconfigs: []
