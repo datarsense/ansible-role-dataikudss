@@ -86,6 +86,14 @@
       - python36 
   when: ansible_facts['os_family'] == 'RedHat' and ansible_facts ['distribution_major_version'] == '8'
 
+- name: Set Python 3 as the default python interpreter
+  become: true
+  community.general.alternatives:
+    name: python
+    path: /usr/bin/python3
+    link: /usr/bin/python
+    state: selected
+
 - name: Disable SELinux
   become: true
   when: "'selinux-policy' in ansible_facts.packages"
