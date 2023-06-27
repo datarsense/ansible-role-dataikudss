@@ -5,6 +5,7 @@
     name: "{{ packages }}"
     state: present
   vars:
+    ansible_python_interpreter: "/usr/bin/python2"
     packages:
       - sudo
   when: ansible_facts['os_family'] == 'RedHat' and ansible_facts ['distribution_major_version'] == '7'
@@ -14,6 +15,8 @@
   ansible.builtin.yum:
     name: epel-release
     state: latest
+  vars:
+    ansible_python_interpreter: "/usr/bin/python2"
   when: ansible_facts['os_family'] == 'RedHat' and ansible_facts ['distribution_major_version'] == '7'
   tags: [molecule-idempotence-notest]
 
@@ -41,6 +44,7 @@
     name: "{{ packages }}"
     state: present
   vars:
+    ansible_python_interpreter: "/usr/bin/python2"
     packages:
       - acl
       - expat
@@ -60,6 +64,7 @@
     name: "{{ packages }}"
     state: present
   vars:
+    ansible_python_interpreter: "/usr/bin/python2"
     packages:
       - libselinux-python
       - libselinux-python3
@@ -76,6 +81,7 @@
     name: "{{ packages }}"
     state: present
   vars:
+    ansible_python_interpreter: "/usr/bin/python2"
     packages:
       - ncurses-compat-libs
       - python3-libselinux
@@ -86,6 +92,7 @@
       - python36 
   when: ansible_facts['os_family'] == 'RedHat' and ansible_facts ['distribution_major_version'] == '8'
 
+# Set python3 as the default Python interpreter
 - name: Set Python 3 as the default python interpreter
   become: true
   community.general.alternatives:
