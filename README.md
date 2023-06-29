@@ -5,7 +5,7 @@ An Ansible role automating Dataiku DSS deployment.
 
 Requirements
 ------------
-The role is compatible with **Debian 10**, **Centos 7**, and **Centos 8**. Debian 11 is not supported as it is not a DSS 11.x supported OS. 
+The role is compatible with **Debian 10** and **AlmaLinux 8**. Debian 11 is not supported as it is not a DSS 11.x & 12.xsupported OS. Centos 7 (EOL June 30th, 2024) & Centos 8 (EOL December 31st, 2021) are not compatible anymore with this role.
 
 **Ansible 5.8 or newer** is required on the host running the ansible playbook. The account used for running the playbook must have **sudo** privileges on the remote environment and must be allowed to become :
   - **root** for pre-install stage (installing packages, creating the dss servie user)

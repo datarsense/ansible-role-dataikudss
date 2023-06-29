@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        platform: [ 'molecule-almalinux8', 'molecule-debian10', 'molecule-centos7' ]
+        platform: [ 'molecule-almalinux8', 'molecule-debian10' ]
       # When set to true, GitHub cancels all in-progress jobs if any matrix job fails.
       fail-fast: true
       # The maximum number of jobs that can run simultaneously

@@ -10,20 +10,10 @@ platforms:
     privileged: true
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
-  - name: molecule-centos7
-    image: docker.io/centos:7
-    privileged: true
-    volumes:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:rw"
-      - "/var/run/docker.sock:/var/run/docker.sock"
-    command: "/usr/sbin/init"
-    tty: True
-    env:
-      container: docker
   - name: molecule-almalinux8
     image: docker.io/almalinux:8.8
     pre_build_image: false
-    #dockerfile: Dockerfile-centos8.j2
+
     privileged: true
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:rw"
