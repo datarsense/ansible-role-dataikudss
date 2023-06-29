@@ -24,8 +24,8 @@ Role Variables
 |----------|---------------|-------|
 |dss_base_repository_url | https://cdn.downloads.dataiku.com/public/studio | Base URL of the Dataiku CDN. The base URL is variabilized to make the role compatible with offline deployment |
 |dataiku_python_api_package | "git+https://github.com/dataiku/dataiku-api-client-python@release/5.1#egg=dataiku-api-client" | Source repository of the **dataiku-api-client-python** module|
-|dss_version| "10.0.7" | The DSS version which has to be deployed |
-|dss_api_version| "5.1" | Version of the DSS API |
+|dss_version| "12.1.0" | The DSS version which has to be deployed |
+|dss_api_version| "12.1.0" | Version of the DSS Python API client to be used by the ansible role to configure DSS |
 |dss_service_user| dataiku | Name of the DSS service user which will be created by this playbook|
 |dss_service_user_shell| "/bin/bash" | Shell of the `dss_service_user`. keep `/bin/bash`|
 |dss_service_user_home_basedir| /home | Home directory of the DSS instance. In some rare deployment scenarios, it can be different than `/home`|

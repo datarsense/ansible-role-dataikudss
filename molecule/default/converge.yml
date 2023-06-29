@@ -155,13 +155,13 @@
       ansible.builtin.include_role:
         name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
       vars:
-        dss_version: "10.0.7"
-        dss_hadoop_package: "dataiku-dss-hadoop-standalone-libs-generic-hadoop3-10.0.7.tar.gz"
-        dss_spark_package: "dataiku-dss-spark-standalone-10.0.7-3.1.2-generic-hadoop3.tar.gz"
+        dss_version: "11.4.0"
+        dss_hadoop_package: "dataiku-dss-hadoop-standalone-libs-generic-hadoop3-11.4.0.tar.gz"
+        dss_spark_package: "dataiku-dss-spark-standalone-11.4.0-3.3.1-generic-hadoop3.tar.gz"
     - name: "Test DSS upgrade"
       ansible.builtin.include_role:
         name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
       vars:
-        dss_version: "11.4.0"
-        dss_hadoop_package: "dataiku-dss-hadoop-standalone-libs-generic-hadoop3-11.4.0.tar.gz"
-        dss_spark_package: "dataiku-dss-spark-standalone-11.4.0-3.3.1-generic-hadoop3.tar.gz"
+        dss_version: "12.1.0"
+        dss_hadoop_package: "dataiku-dss-hadoop-standalone-libs-generic-hadoop3-12.1.0.tar.gz"
+        dss_spark_package: "dataiku-dss-spark-standalone-12.1.0-3.3.1-generic-hadoop3.tar.gz"
