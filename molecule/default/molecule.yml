@@ -20,8 +20,8 @@ platforms:
     tty: True
     env:
       container: docker
-  - name: molecule-centos8
-    image: quay.io/centos/centos:stream8
+  - name: molecule-almalinux8
+    image: docker.io/almalinux:8.8
     pre_build_image: false
     #dockerfile: Dockerfile-centos8.j2
     privileged: true
