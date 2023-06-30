@@ -1,0 +1,62 @@
+---
+
+# Default package manager in EL 8 is DNF
+- name: Installing sudo package
+  ansible.builtin.dnf:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - sudo
+
+- name: Enable EPEL Repository
+  become: true
+  ansible.builtin.dnf:
+    name: epel-release
+    state: latest
+  tags: [molecule-idempotence-notest]
+
+- name: Installing dependencies
+  become: true
+  ansible.builtin.dnf:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - acl
+      - expat
+      - git
+      - nginx
+      - unzip
+      - zip
+      - java-1.8.0-openjdk
+      - freetype 
+      - libgfortran 
+      - libgomp
+      - ncurses-compat-libs
+      - python2
+      - python2-setuptools
+      - python2-six
+      - python2-requests
+      - python3-libselinux
+      - python3-setuptools
+      - python36 
+
+# Set python3 as the default Python interpreter
+- name: Set Python 3 as the default python interpreter
+  become: true
+  community.general.alternatives:
+    name: python
+    path: /usr/bin/python3
+    link: /usr/bin/python
+    state: selected
+
+- name: Disable SELinux
+  become: true
+  when: "'selinux-policy' in ansible_facts.packages"
+  ansible.posix.selinux:
+    state: disabled
+  register: selinuxdisabled
+  notify:
+    - Reboot server
+  tags: [setup]

@@ -5,7 +5,7 @@ An Ansible role automating Dataiku DSS deployment.
 
 Requirements
 ------------
-The role is compatible with **Debian 10**, **Centos 7**, and **Centos 8**. Debian 11 is not supported as it is not a DSS 11.x supported OS. 
+The role is compatible with **Debian 10** and **AlmaLinux 8**. Debian 11 is not supported as it is not a DSS 11.x & 12.xsupported OS. Centos 7 (EOL June 30th, 2024) & Centos 8 (EOL December 31st, 2021) are not compatible anymore with this role.
 
 **Ansible 5.8 or newer** is required on the host running the ansible playbook. The account used for running the playbook must have **sudo** privileges on the remote environment and must be allowed to become :
   - **root** for pre-install stage (installing packages, creating the dss servie user)
@@ -24,8 +24,8 @@ Role Variables
 |----------|---------------|-------|
 |dss_base_repository_url | https://cdn.downloads.dataiku.com/public/studio | Base URL of the Dataiku CDN. The base URL is variabilized to make the role compatible with offline deployment |
 |dataiku_python_api_package | "git+https://github.com/dataiku/dataiku-api-client-python@release/5.1#egg=dataiku-api-client" | Source repository of the **dataiku-api-client-python** module|
-|dss_version| "10.0.7" | The DSS version which has to be deployed |
-|dss_api_version| "5.1" | Version of the DSS API |
+|dss_version| "12.1.0" | The DSS version which has to be deployed |
+|dss_api_version| "12.1.0" | Version of the DSS Python API client to be used by the ansible role to configure DSS |
 |dss_service_user| dataiku | Name of the DSS service user which will be created by this playbook|
 |dss_service_user_shell| "/bin/bash" | Shell of the `dss_service_user`. keep `/bin/bash`|
 |dss_service_user_home_basedir| /home | Home directory of the DSS instance. In some rare deployment scenarios, it can be different than `/home`|
@@ -142,8 +142,8 @@ A configuration example is provided below with **two kubernetes execution config
 | Variable | Default value |
 |----------|-------------|
 |configure_spark| true |
-|dss_hadoop_package|"dataiku-dss-hadoop-standalone-libs-generic-hadoop3-10.0.7.tar.gz"|
-|dss_spark_package| "dataiku-dss-spark-standalone-10.0.7-3.1.2-generic-hadoop3.tar.gz"|
+|dss_hadoop_package|"dataiku-dss-hadoop-standalone-libs-generic-hadoop3-12.1.0.tar.gz"|
+|dss_spark_package| "dataiku-dss-spark-standalone-12.1.0-3.3.1-generic-hadoop3.tar.gz"|
 |spark_executionconfigs| _see below_ |
 
 The **spark_executionconfigs** is an array which **can contain multiple spark execution configurations** to match different business scenario, including Spark on kubernetes. By default, this variable mirrors the default spark configuration of a DSS instance :

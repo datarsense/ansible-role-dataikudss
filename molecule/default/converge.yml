@@ -51,8 +51,9 @@
           prePushMode: NONE
           dockerTLSVerify: false
     configure_k8s: true
-    download_dss_docker_images: true
+    download_dss_docker_images: false
     download_dss_docker_images_url_tmp_directory: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/.tmp"
+
     k8s_executionconfigs:
       - name: test1
         type: KUBERNETES
@@ -154,13 +155,13 @@
       ansible.builtin.include_role:
         name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
       vars:
-        dss_version: "10.0.7"
-        dss_hadoop_package: "dataiku-dss-hadoop-standalone-libs-generic-hadoop3-10.0.7.tar.gz"
-        dss_spark_package: "dataiku-dss-spark-standalone-10.0.7-3.1.2-generic-hadoop3.tar.gz"
+        dss_version: "11.4.0"
+        dss_hadoop_package: "dataiku-dss-hadoop-standalone-libs-generic-hadoop3-11.4.0.tar.gz"
+        dss_spark_package: "dataiku-dss-spark-standalone-11.4.0-3.3.1-generic-hadoop3.tar.gz"
     - name: "Test DSS upgrade"
       ansible.builtin.include_role:
         name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
       vars:
-        dss_version: "11.1.1"
-        dss_hadoop_package: "dataiku-dss-hadoop-standalone-libs-generic-hadoop3-11.1.1.tar.gz"
-        dss_spark_package: "dataiku-dss-spark-standalone-11.1.1-3.2.1-generic-hadoop3.tar.gz"
+        dss_version: "12.1.0"
+        dss_hadoop_package: "dataiku-dss-hadoop-standalone-libs-generic-hadoop3-12.1.0.tar.gz"
+        dss_spark_package: "dataiku-dss-spark-standalone-12.1.0-3.3.1-generic-hadoop3.tar.gz"
