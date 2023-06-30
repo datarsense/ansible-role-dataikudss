@@ -142,8 +142,8 @@ A configuration example is provided below with **two kubernetes execution config
 | Variable | Default value |
 |----------|-------------|
 |configure_spark| true |
-|dss_hadoop_package|"dataiku-dss-hadoop-standalone-libs-generic-hadoop3-10.0.7.tar.gz"|
-|dss_spark_package| "dataiku-dss-spark-standalone-10.0.7-3.1.2-generic-hadoop3.tar.gz"|
+|dss_hadoop_package|"dataiku-dss-hadoop-standalone-libs-generic-hadoop3-12.1.0.tar.gz"|
+|dss_spark_package| "dataiku-dss-spark-standalone-12.1.0-3.3.1-generic-hadoop3.tar.gz"|
 |spark_executionconfigs| _see below_ |
 
 The **spark_executionconfigs** is an array which **can contain multiple spark execution configurations** to match different business scenario, including Spark on kubernetes. By default, this variable mirrors the default spark configuration of a DSS instance :
