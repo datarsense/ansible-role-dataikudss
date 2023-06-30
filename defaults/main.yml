@@ -29,8 +29,8 @@ download_dss_docker_images_url: "{{ dss_base_repository_url }}/{{ dss_version }}
 
 # Optional : add dss spark support
 configure_spark: true
-dss_hadoop_package: "dataiku-dss-hadoop-standalone-libs-generic-hadoop3-11.4.0.tar.gz"
-dss_spark_package: "dataiku-dss-spark-standalone-11.4.0-3.3.1-generic-hadoop3.tar.gz"
+dss_hadoop_package: "dataiku-dss-hadoop-standalone-libs-generic-hadoop3-12.1.0.tar.gz"
+dss_spark_package: "dataiku-dss-spark-standalone-12.1.0-3.3.1-generic-hadoop3.tar.gz"
 spark_executionconfigs:
   - name: default
     description: |- 
