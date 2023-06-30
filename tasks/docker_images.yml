@@ -8,7 +8,7 @@
       - "dataiku-dss-spark-exec-base:dss-{{ dss_version }}-r-py3.6"
       - "dataiku-dss-apideployer-base:dss-{{ dss_version }}-r-py3.6"
   register: result_test_docker_images
-  when: download_dss_docker_images 
+  when: (dataikudss_docker_build_base_image_mode is defined) and (dataikudss_docker_build_base_image_mode == "download") 
   tags: [docker-images]
 
 - name: Create temporary download directory if it does not exist
@@ -18,7 +18,7 @@
     path: "{{ download_dss_docker_images_url_tmp_directory }}"
     state: directory
     mode: '0755'
-  when: download_dss_docker_images and (download_dss_docker_images_url_tmp_directory is defined)
+  when: when: (dataikudss_docker_build_base_image_mode is defined) and (dataikudss_docker_build_base_image_mode == "download") and (download_dss_docker_images_url_tmp_directory is defined)
   tags: [docker-images]
 
 - name: Download base images archive provided by Dataiku
@@ -30,7 +30,7 @@
     dest: "{{ dss_install_dir_location }}/dataiku-dss-ALL-base_dss-{{ dss_version }}-r-py3.6.tar.gz"
     mode: '644'
   register: downloaded_images_archive
-  when: download_dss_docker_images and ((result_test_docker_images.images | length) < 3)
+  when: when: (dataikudss_docker_build_base_image_mode is defined) and (dataikudss_docker_build_base_image_mode == "download") and ((result_test_docker_images.images | length) < 3)
   tags: [docker-images]
 
 - name: Load all base images from archive
@@ -41,3 +41,11 @@
   register: loaded_images
   when: downloaded_images_archive.changed
   tags: [docker-images, molecule-notest]
+
+- name: "Build docker container-exec base image"
+  ansible.builtin.command: >
+    "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}"/bin/dssadmin build-base-image
+      --mode build
+      --type container-exec
+      --build-from-image "{{ dataikudss_docker_source_image if dataikudss_docker_source_image is defined }}"
+  when: (dataikudss_docker_build_base_image_mode is defined) and (dataikudss_docker_build_base_image_mode == "build")
