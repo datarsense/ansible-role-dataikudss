@@ -1,0 +1,23 @@
+---
+
+- name: Test if DSS container-exec base image is registered locally
+  become: true
+  community.docker.docker_image_info:
+    name:
+      - "dku-exec-base-{{ dss_install_id.stdout.lower() }}:dss-{{ dss_version }}"
+  register: result_test_docker_images
+  when: (dataikudss_docker_build_base_image_mode == "build")
+  tags: [docker-images]
+  
+- name: "Build docker container-exec base image"
+  become: true
+  become_user: "{{ dss_service_user }}"
+  ansible.builtin.command: >
+    "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}"/bin/dssadmin build-base-image
+      --mode build
+      --type container-exec
+      --build-from-image "{{ dataikudss_docker_source_image if dataikudss_docker_source_image is defined }}"
+  register: container_exec_image_build
+  changed_when: "'INFO Done, cleaning up' in container_exec_image_build.message"
+  when: (dataikudss_docker_build_base_image_mode == "build")
+    and (result_test_docker_images.images | length < 1)
