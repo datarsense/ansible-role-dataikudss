@@ -18,6 +18,6 @@
       --type container-exec
       --build-from-image "{{ dataikudss_docker_source_image if dataikudss_docker_source_image is defined }}"
   register: container_exec_image_build
-  changed_when: "'INFO Done, cleaning up' in container_exec_image_build.message"
+  changed_when: "'INFO Done, cleaning up' in container_exec_image_build.msg"
   when: (dataikudss_docker_build_base_image_mode == "build")
     and (result_test_docker_images.images | length < 1)
