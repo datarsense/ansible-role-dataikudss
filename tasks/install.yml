@@ -130,7 +130,8 @@
   tags: [dss]
 
 - name: Read dss install id
-  when: configure_uif and ((dss_install is defined and dss_install.changed) or (dss_upgrade is defined and dss_upgrade.changed))
+  when: (configure_uif and ((dss_install is defined and dss_install.changed) or (dss_upgrade is defined and dss_upgrade.changed))
+    or (configure_k8s and dataikudss_docker_build_base_image_mode is defined)
   become: true
   become_user: "{{ dss_service_user }}"
   ansible.builtin.command: /bin/sh -c "grep installid {{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/install.ini | cut -d ' ' -f3" 
