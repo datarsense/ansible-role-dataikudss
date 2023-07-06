@@ -152,11 +152,8 @@
       tags: [docker-images]
     - name: Change /var/run/docker.sock ownership, group and permissions
       become: true
-      ansible.builtin.file:
-        path: /var/run/docker.sock
-        owner: root
-        group: docker
-        mode: '0660'
+      ansible.builtin.command: "chmod 777 /var/run/docker.sock"
+      changed_when: false
       when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
   tasks:
     - name: "Test DSS install"
