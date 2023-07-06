@@ -13,7 +13,6 @@ platforms:
   - name: molecule-almalinux8
     image: docker.io/almalinux:8.8
     pre_build_image: false
-
     privileged: true
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:rw"
