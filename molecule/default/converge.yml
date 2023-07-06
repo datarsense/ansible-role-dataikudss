@@ -151,6 +151,7 @@
         name: geerlingguy.pip
       tags: [docker-images]
     - name: Change /var/run/docker.sock ownership, group and permissions
+      become: true
       ansible.builtin.file:
         path: /var/run/docker.sock
         owner: root
