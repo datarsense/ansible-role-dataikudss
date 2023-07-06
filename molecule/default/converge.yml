@@ -150,6 +150,13 @@
       ansible.builtin.include_role:
         name: geerlingguy.pip
       tags: [docker-images]
+    - name: Change /var/run/docker.sock ownership, group and permissions
+      ansible.builtin.file:
+        path: /var/run/docker.sock
+        owner: root
+        group: docker
+        mode: '0660'
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
   tasks:
     - name: "Test DSS install"
       ansible.builtin.include_role:
