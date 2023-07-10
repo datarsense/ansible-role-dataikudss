@@ -15,6 +15,13 @@
   when: (configure_k8s) 
     and (dataikudss_docker_build_base_image_mode is defined)
 
+# DOCKER - BUILD SPARK BASE IMAGE WHEN SPARK & KUBERNETES ARE ENABLED
+- name: DOCKER - BUILD SPARK BASE IMAGE
+  ansible.builtin.import_tasks: docker_images/spark.yml
+  when: (configure_k8s)
+    and (configure_spark) 
+    and (dataikudss_docker_build_base_image_mode is defined)
+
 # DOWNLOAD DOCKER IMAGES EMBEDDED IN A TAR.GZ ARCHIVE FROM DATAIKU CDN AND LOAD THEM
 - name: Test if DSS base images provided by Dataiku are registered locally
   become: true
