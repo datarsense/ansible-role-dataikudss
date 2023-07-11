@@ -21,7 +21,7 @@
       --copy-to-buildenv "{{ dataikudss_docker_copy_to_buildenv if dataikudss_docker_copy_to_buildenv is defined }}"
       --dockerfile-prepend "{{ dataikudss_dockerfile_prepend if dataikudss_dockerfile_prepend is defined }}"
       --dockerfile-append "{{ dataikudss_dockerfile_append if dataikudss_dockerfile_append is defined }}"
-      "{{ '--without-r' if (dataikudss_docker_without_r is defined) and dataikudss_docker_without_r }}"
+      "{{ '--with-r' if (dataikudss_docker_r is defined) and dataikudss_docker_r else '--without-r' }}"
   register: container_exec_image_build
   changed_when: "'INFO Done, cleaning up' in container_exec_image_build.msg"
   when: (dataikudss_docker_build_base_image_mode == "build")

@@ -54,11 +54,11 @@
     download_dss_docker_images: false
     download_dss_docker_images_url_tmp_directory: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/.tmp"
     dss_docker_pre_build_script: docker_pre_build_script.sh
-    dataikudss_docker_distrib: alamlinux8
+    dataikudss_docker_distrib: almalinux8
     #dataikudss_docker_copy_to_buildenv:
     #dataikudss_dockerfile_prepend:
     #dataikudss_dockerfile_append:
-    dataikudss_docker_without_r: true
+    dataikudss_docker_r: false
     k8s_executionconfigs:
       - name: test1
         type: KUBERNETES
