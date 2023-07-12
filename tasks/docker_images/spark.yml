@@ -12,12 +12,8 @@
 - name: "Build docker spark base image"
   become: true
   become_user: "{{ dss_service_user }}"
-  ansible.builtin.command: >
-    "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}"/bin/dssadmin build-base-image
-      --mode build
-      --type spark
-      --build-from-image "{{ dataikudss_docker_source_image if dataikudss_docker_source_image is defined }}"
+  ansible.builtin.command: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/build_base_images.sh spark"
   register: spark_image_build
   changed_when: "'INFO Done, cleaning up' in spark_image_build.msg"
   when: (dataikudss_docker_build_base_image_mode == "build")
-    and (result_test_spark_docker_image.images | length < 1)
+    and ((result_test_spark_docker_image.images | length < 1) or docker_base_image_build_script.changed)

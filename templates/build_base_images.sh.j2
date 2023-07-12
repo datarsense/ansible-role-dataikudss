@@ -1,0 +1,30 @@
+#!/bin/bash
+
+{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}/bin/dssadmin build-base-image \
+    --mode {{ dataikudss_docker_build_base_image_mode }} \
+    --type $1 \
+  {% if dataikudss_docker_distrib is defined %}
+    --distrib {{ dataikudss_docker_distrib }} \
+  {% endif %}
+  {% if dataikudss_docker_source_image is defined %}
+    --build-from-image {{ dataikudss_docker_source_image }} \
+  {% endif %}
+  {% if dataikudss_dockerfile_prepend is defined %}
+    --dockerfile-prepend {{ dataikudss_dockerfile_prepend }} \
+  {% endif %}
+  {% if dataikudss_dockerfile_append is defined %}
+    --dockerfile-append {{ dataikudss_dockerfile_append  }} \
+  {% endif %}
+  {% if (dataikudss_docker_copy_to_buildenv_from is defined) and (dataikudss_docker_copy_to_buildenv_to is defined) %}
+    --copy-to-buildenv {{ dataikudss_docker_copy_to_buildenv_from }} {{ dataikudss_docker_copy_to_buildenv_to }} \
+  {% endif %}
+  {% if (dataikudss_docker_r is defined) and dataikudss_docker_r %}
+    --with-r \
+  {% endif %}
+  {% if (dataikudss_docker_r is defined) and (not dataikudss_docker_r) %}
+    --without-r 
+  {% endif %}
+
+      
+
+

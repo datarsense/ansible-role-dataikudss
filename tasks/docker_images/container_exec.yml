@@ -1,11 +1,22 @@
 ---
 
+- name: Copy docker base images build script
+  become: true
+  become_user: "{{ dss_service_user }}"
+  ansible.builtin.template:
+    src: "build_base_images.sh.j2"
+    dest: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/build_base_images.sh"
+    mode: '700'
+  register: docker_base_image_build_script
+  when: (dataikudss_docker_build_base_image_mode == "build")
+  tags: [docker-images]
+
 - name: Test if DSS container-exec base image is registered locally
   become: true
   community.docker.docker_image_info:
     name:
       - "dku-exec-base-{{ dss_install_id.stdout.lower() }}:dss-{{ dss_version }}"
-  register: result_test_docker_images
+  register: result_test_container_exec_docker_image
   when: (dataikudss_docker_build_base_image_mode == "build")
   tags: [docker-images]
   
@@ -14,17 +25,8 @@
 - name: "Build docker container-exec base image"
   become: true
   become_user: "{{ dss_service_user }}"
-  ansible.builtin.shell: >
-    "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/{{ dss_datadir }}"/bin/dssadmin build-base-image
-    --mode build
-    --type container-exec
-    "{{ '--distrib ' + dataikudss_docker_distrib if dataikudss_docker_distrib is defined }}"
-    "{{ '--build-from-image ' + dataikudss_docker_source_image if dataikudss_docker_source_image is defined }}"
-    "{{ '--copy-to-buildenv ' + dataikudss_docker_copy_to_buildenv if dataikudss_docker_copy_to_buildenv is defined }}"
-    "{{ '--dockerfile-prepend ' +  dataikudss_dockerfile_prepend if dataikudss_dockerfile_prepend is defined }}"
-    "{{ '--dockerfile-append ' +  dataikudss_dockerfile_append if dataikudss_dockerfile_append is defined }}"
-    "{{ '--with-r' if (dataikudss_docker_r is defined) and dataikudss_docker_r else '--without-r' }}"
+  ansible.builtin.shell: "{{ dss_service_user_home_basedir }}/{{ dss_service_user }}/build_base_images.sh container-exec"
   register: container_exec_image_build
   changed_when: "'INFO Done, cleaning up' in container_exec_image_build.msg"
   when: (dataikudss_docker_build_base_image_mode == "build")
-    and (result_test_docker_images.images | length < 1)
+    and ((result_test_container_exec_docker_image.images | length < 1) or docker_base_image_build_script.changed)
