@@ -399,9 +399,9 @@ Create a `requirements.yml` file in your playbook. The `requirements.yml` has to
   name: dataiku-api-client-python
   version: release/8.0
 
-- src: git+https://github.com/dataiku/dataiku-ansible-modules
-  name: dataiku.dataiku-ansible-modules
-  version: master
+- src: git+https://github.com/datarsense/dataiku-ansible-modules
+  name: datarsense.dataiku-ansible-modules
+  version: 20230919
 
 - src: git+https://github.com/datarsense/ansible-role-dataikudss.git
   name: datarsense.dataikudss
